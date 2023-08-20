@@ -1,5 +1,6 @@
 import ColorPicker from '@thednp/color-picker';
-import '@thednp/color-picker/src/scss/color-picker.scss';
+// import '@thednp/color-picker/src/scss/color-picker.scss';
+import './color-picker.css';
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { addListener, removeListener } from '@thednp/event-listener';

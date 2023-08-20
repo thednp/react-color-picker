@@ -1,12 +1,12 @@
 <!-- TODO [<img width="100%" src="banner.svg" alt="react-color-picker">](https://react-color-picker.netlify.app/) -->
 
 # React Color Picker
-[![ci](https://github.com/thednp/react-color-picker/actions/workflows/ci.yml/badge.svg)](https://github.com/thednp/react-color-picker/actions/workflows/ci.yml)
+<!-- [![ci](https://github.com/thednp/react-color-picker/actions/workflows/ci.yml/badge.svg)](https://github.com/thednp/react-color-picker/actions/workflows/ci.yml) -->
 [![Npm Version](https://img.shields.io/npm/v/@thednp/react-color-picker)](https://www.npmjs.com/package/@thednp/react-color-picker)
 [![typescript version](https://img.shields.io/badge/typescript-5.1.6-brightgreen)](https://www.typescriptlang.org/)
 [![eslint version](https://img.shields.io/badge/eslint-8.47.0-brightgreen)](https://github.com/eslint)
 [![prettier version](https://img.shields.io/badge/prettier-3.0.2-brightgreen)](https://prettier.io/)
-[![solid-js version](https://img.shields.io/badge/solid--js-1.7.11-brightgreen)](https://solidjs.com/)
+[![react version](https://img.shields.io/badge/react-18.2.0-brightgreen)](https://react.dev/)
 [![vite version](https://img.shields.io/badge/vite-4.4.9-brightgreen)](https://github.com/vitejs)
 
 The feature rich **ColorPicker** component for React, sourced with TypeScript, WAI-ARIA compliant and is mainly based on [ColorPicker](http://github.com/thednp/color-picker).

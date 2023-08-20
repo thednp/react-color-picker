@@ -18,7 +18,7 @@ const App = () => {
     }
   };
   return (
-    <div className="container" style={{ padding: '95vh 0' }}>
+    <div className="container" style={{ padding: '15vh 0' }}>
     <div className='row'>
       <div className='col'>
         <DefaultColorPicker id="my-id" label="Default Color Picker" value={"red"} onChange={onChange} />
