@@ -1,6 +1,13 @@
 import { useState, useTransition, useEffect, useRef, CSSProperties } from 'react';
 import type { ColorPickerProps } from '../types/ColorPickerProps';
-import { getWindow, getDocumentElement, getBoundingClientRect, reflow, emulateTransitionEnd, Timer } from '@thednp/shorty';
+import {
+  getWindow,
+  getDocumentElement,
+  getBoundingClientRect,
+  reflow,
+  emulateTransitionEnd,
+  Timer,
+} from '@thednp/shorty';
 import { addListener, removeListener } from '@thednp/event-listener';
 
 import '@thednp/color-picker/src/scss/color-picker.scss';
@@ -51,19 +58,18 @@ const DefaultColorPicker = (props: ColorPickerProps) => {
     }
   };
 
-
   const handleDismiss = () => {
     // console.log(e)
     if (pickerShown) hidePicker();
     else if (menuShown) hideMenu();
-  }
+  };
 
   const toggleEvents = (add?: boolean) => {
     const action = add ? addListener : removeListener;
     if (input.current) {
       const win = getWindow(input.current);
       const doc = win.document;
-  
+
       action(win, 'scroll', updatePosition);
       action(doc, 'keyup', handleDismiss);
     }
@@ -76,13 +82,12 @@ const DefaultColorPicker = (props: ColorPickerProps) => {
       toggleEvents();
     }
     return toggleEvents;
-
-  }, [pickerShown, menuShown])
+  }, [pickerShown, menuShown]);
 
   const hideTransitionEnd = () => {
     setPosition('');
     setOpen(null);
-  }
+  };
   const showMenu = () => {
     if (menuDropdown.current) {
       setPickerShown(false);
@@ -100,7 +105,6 @@ const DefaultColorPicker = (props: ColorPickerProps) => {
       setMenuShown(false);
       reflow(menuDropdown.current);
       emulateTransitionEnd(menuDropdown.current, hideTransitionEnd);
-
     }
   };
   const toggleMenu = () => {
@@ -120,7 +124,7 @@ const DefaultColorPicker = (props: ColorPickerProps) => {
       startTransition(() => {
         updatePosition();
         setPickerShown(true);
-      })
+      });
     }
   };
   const hidePicker = () => {
@@ -177,15 +181,13 @@ const DefaultColorPicker = (props: ColorPickerProps) => {
         />
         <div
           ref={pickerDropdown}
-          className={`color-dropdown picker${open === pickerDropdown.current ? (' ' + position) : ''}${pickerShown ? ' show' : ''}`}
+          className={`color-dropdown picker${open === pickerDropdown.current ? ' ' + position : ''}${
+            pickerShown ? ' show' : ''
+          }`}
           role="group"
         >
-          <div className="color-controls rgb">
-            Visual controls come here
-          </div>
-          <div className="color-form rgb">
-            Color forms come here
-          </div>
+          <div className="color-controls rgb">Visual controls come here</div>
+          <div className="color-form rgb">Color forms come here</div>
         </div>
         <button
           className="menu-toggle btn-appearance"
@@ -204,7 +206,7 @@ const DefaultColorPicker = (props: ColorPickerProps) => {
         </button>
         <div
           ref={menuDropdown}
-          className={`color-dropdown scrollable menu${open === menuDropdown.current ? (' ' + position) : ''}${
+          className={`color-dropdown scrollable menu${open === menuDropdown.current ? ' ' + position : ''}${
             menuShown ? ' show' : ''
           }`}
         >
@@ -212,7 +214,15 @@ const DefaultColorPicker = (props: ColorPickerProps) => {
             className="color-options scrollable multiline"
             role="listbox"
             aria-label="Colour Presets"
-            style={{ '--grid-item-size': '1.5rem', '--grid-fit': '10', '--grid-gap': '1px', '--grid-height': '4.5rem', '--grid-hover-height': 'calc(5 * 1.5rem + 4 * 1px)' } as CSSProperties}
+            style={
+              {
+                '--grid-item-size': '1.5rem',
+                '--grid-fit': '10',
+                '--grid-gap': '1px',
+                '--grid-height': '4.5rem',
+                '--grid-hover-height': 'calc(5 * 1.5rem + 4 * 1px)',
+              } as CSSProperties
+            }
           >
             <li>Update List here</li>
             <li

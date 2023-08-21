@@ -1,15 +1,47 @@
 {
   "name": "@thednp/react-color-picker",
   "version": "0.0.1",
-  "description": "Modern Color Picker for React",
+  "description": "🎨 Modern Color Picker for React",
+  "keywords": [
+    "react",
+    "react-component",
+    "color picker",
+    "colorpicker"
+  ],
+  "homepage": "https://github.com/thednp/react-color-picker#readme",
+  "bugs": {
+    "url": "https://github.com/thednp/react-color-picker/issues"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/thednp/react-color-picker.git"
+  },
+  "sideEffects": false,
   "type": "module",
+  "files": [
+    "dist",
+    "src"
+  ],
+  "peerDependencies": {
+    "react": "^16.0.0"
+  },
   "scripts": {
-    "format": "prettier -w \"src/**/*.{js,ts,json,css,tsx,jsx}\" \"example/**/*.{js,ts,json,css,tsx,jsx}\"",
-    "start": "vite",
+    "start": "vite serve example",
     "dev": "vite serve example",
-    "build": "tsc && vite build",
-    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "serve": "vite preview example"
+    "build": "tsup",
+    "build:example": "vite build example",
+    "prepublishOnly": "pnpm lint && pnpm format && tsup",
+    "format": "prettier -w \"src/**/*.{js,ts,json,css,tsx,jsx}\" \"example/**/*.{js,ts,json,css,tsx,jsx}\"",
+    "lint": "pnpm lint:types && pnpm lint:code",
+    "lint:code": "eslint --max-warnings 0 src/**/*.{ts,tsx}",
+    "lint:types": "tsc --noEmit",
+    "fix:ts": "eslint src/**/*.{ts,tsx} --fix",
+    "serve": "vite preview example",
+    "update-deps": "pnpm up -Li"
   },
   "license": "MIT",
   "devDependencies": {
@@ -22,6 +54,9 @@
     "eslint": "^8.45.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.3",
+    "eslint-plugin-no-only-tests": "^3.1.0",
+    "eslint-plugin-eslint-comments": "^3.2.0",
+    "tsup": "^7.2.0",
     "sass": "^1.63.6",
     "typescript": "^5.1.3",
     "vite": "^4.4.5"
@@ -33,5 +68,10 @@
     "prettier": "^2.8.8",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
+  },
+  "packageManager": "pnpm@8.6.12",
+  "engines": {
+    "node": ">=16",
+    "pnpm": ">=8.6.0"
   }
 }

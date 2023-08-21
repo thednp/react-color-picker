@@ -1,9 +1,7 @@
 {
   "extends": "../tsconfig.json",
   "compilerOptions": {
-    "types": [
-      "vite/client"
-    ]
+    "types": ["vite/client"]
   },
   "include": ["./**/*"],
   "exclude": ["node_modules", "dist"]
