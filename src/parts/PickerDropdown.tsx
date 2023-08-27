@@ -1,5 +1,14 @@
 import Color from '@thednp/color';
-import { createElement, useEffect, useState, startTransition, Suspense, ChangeEvent, RefObject, forwardRef } from 'react';
+import {
+  createElement,
+  useEffect,
+  useState,
+  startTransition,
+  Suspense,
+  ChangeEvent,
+  RefObject,
+  forwardRef,
+} from 'react';
 import type { ControlProps, PickerProps } from '../types/types';
 import { usePickerContext } from './ColorPickerContext';
 
@@ -414,7 +423,7 @@ const PickerDropdown = forwardRef((props: PickerProps, ref: RefObject<HTMLElemen
   // console.log(props, ref)
   const { format } = usePickerContext();
 
-  return <Suspense>{createElement(PartSelection[format], {...props, ref})}</Suspense>;
+  return <Suspense>{createElement(PartSelection[format], { ...props, ref })}</Suspense>;
 });
 
 export default PickerDropdown;

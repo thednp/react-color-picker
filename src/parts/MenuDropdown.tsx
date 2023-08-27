@@ -11,8 +11,7 @@ const PresetsMenu = (props: PresetsProps) => {
   const { locale, value, update, format } = usePickerContext();
   const { colorPresets } = props;
   const colors = () =>
-    new ColorPalette(colorPresets.hue, colorPresets.hueSteps, colorPresets.lightSteps, colorPresets.saturation)
-      .colors;
+    new ColorPalette(colorPresets.hue, colorPresets.hueSteps, colorPresets.lightSteps, colorPresets.saturation).colors;
   const colorsCount = () => colors().length;
   const fit = () => colorPresets.lightSteps;
   const isMultiLine = () => colorsCount() > fit();
@@ -46,54 +45,54 @@ const PresetsMenu = (props: PresetsProps) => {
   return (
     <Suspense>
       <ul className={finalClass()} role="listbox" aria-label={locale().presetsLabel} style={style() as CSSProperties}>
-          {colors().map(color => {
-            const newColor = () => new Color(color, format);
-            const newValue = () => newColor().toString();
-            const isActive = () => newValue() === value;
-            const getClass = () => `color-option${isActive() ? ' active' : ''}`;
-            return (
-              <li
-                key={newValue()}
-                tabIndex={0}
-                role="option"
-                aria-selected={isActive()}
-                className={getClass()}
-                onClick={() => update(newColor())}
-                style={{ backgroundColor: color.toRgbString() }}
-              >
-                {newValue()}
-              </li>
-            );
-          })}
+        {colors().map(color => {
+          const newColor = () => new Color(color, format);
+          const newValue = () => newColor().toString();
+          const isActive = () => newValue() === value;
+          const getClass = () => `color-option${isActive() ? ' active' : ''}`;
+          return (
+            <li
+              key={newValue()}
+              tabIndex={0}
+              role="option"
+              aria-selected={isActive()}
+              className={getClass()}
+              onClick={() => update(newColor())}
+              style={{ backgroundColor: color.toRgbString() }}
+            >
+              {newValue()}
+            </li>
+          );
+        })}
       </ul>
     </Suspense>
   );
 };
 
-const KeywordsMenu= (props: KeyProps) => {
+const KeywordsMenu = (props: KeyProps) => {
   const { colorKeywords } = props;
   const { locale, value, update, format } = usePickerContext();
 
   return (
     <Suspense>
       <ul className="color-defaults" role="listbox" aria-label={locale().defaultsLabel}>
-          {colorKeywords.map(key => {
-            const [label, val] = typeof key === 'string' ? [key, key] : (ObjectEntries(key)[0] as [string, string]);
-            const isActive = () => val === value;
-            const className = () => `color-option${isActive() ? ' active' : ''}`;
-            return (
-              <li
-                key={label}
-                className={className()}
-                onClick={() => update(new Color(val, format))}
-                tabIndex={0}
-                role="option"
-                aria-selected={isActive()}
-              >
-                {label}
-              </li>
-            );
-          })}
+        {colorKeywords.map(key => {
+          const [label, val] = typeof key === 'string' ? [key, key] : (ObjectEntries(key)[0] as [string, string]);
+          const isActive = () => val === value;
+          const className = () => `color-option${isActive() ? ' active' : ''}`;
+          return (
+            <li
+              key={label}
+              className={className()}
+              onClick={() => update(new Color(val, format))}
+              tabIndex={0}
+              role="option"
+              aria-selected={isActive()}
+            >
+              {label}
+            </li>
+          );
+        })}
       </ul>
     </Suspense>
   );
@@ -110,9 +109,7 @@ const MenuDropdown = forwardRef((props: MenuProps, ref: RefObject<HTMLDivElement
         <>
           {props.children}
           <div id={id()} ref={ref} className={menuClass()}>
-            {typeof colorPresets !== 'undefined' && colorPresets ? (
-              <PresetsMenu {...(props as PresetsProps)} />
-            ) : null}
+            {typeof colorPresets !== 'undefined' && colorPresets ? <PresetsMenu {...(props as PresetsProps)} /> : null}
             {typeof colorKeywords !== 'undefined' && colorKeywords ? <KeywordsMenu {...(props as KeyProps)} /> : null}
           </div>
         </>

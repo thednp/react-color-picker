@@ -1,7 +1,7 @@
 import Color from '@thednp/color';
 import React from 'react';
 import { createContext, useContext } from 'react';
-import type {LanguagePack } from '../types/types';
+import type { LanguagePack } from '../types/types';
 import initialControlPositions from '../util/initialControlPositions';
 
 type Accessor<T> = () => T;

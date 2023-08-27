@@ -89,11 +89,19 @@ const DefaultColorPicker = (props: ColorPickerProps) => {
   let input = useRef<HTMLInputElement>(null);
 
   const controls = () => {
-    return [...getElementsByClassName('color-control', pickerDropdown.current as ParentNode)] as [HTMLElement, HTMLElement, HTMLElement];
+    return [...getElementsByClassName('color-control', pickerDropdown.current as ParentNode)] as [
+      HTMLElement,
+      HTMLElement,
+      HTMLElement,
+    ];
   };
 
   const visuals = () => {
-    return [...getElementsByClassName('visual-control', pickerDropdown.current as ParentNode)] as [HTMLElement, HTMLElement, HTMLElement];
+    return [...getElementsByClassName('visual-control', pickerDropdown.current as ParentNode)] as [
+      HTMLElement,
+      HTMLElement,
+      HTMLElement,
+    ];
   };
 
   const knobs = () => {
@@ -104,7 +112,11 @@ const DefaultColorPicker = (props: ColorPickerProps) => {
   };
 
   const inputs = () => {
-    return [...getElementsByClassName('color-input', pickerDropdown.current as ParentNode)] as [HTMLElement, HTMLElement, HTMLElement];
+    return [...getElementsByClassName('color-input', pickerDropdown.current as ParentNode)] as [
+      HTMLElement,
+      HTMLElement,
+      HTMLElement,
+    ];
   };
   const hue = () => controlPositions.c2y / offsetHeight;
   const lightness = () => roundPart(color.toHsv().v * 100);
@@ -227,7 +239,9 @@ const DefaultColorPicker = (props: ColorPickerProps) => {
     const { target, code } = e;
     const { previousElementSibling, nextElementSibling, parentElement } = target;
     const isColorOptionsMenu =
-      typeof menuDropdown !== 'undefined' && parentElement && (menuDropdown.current as HTMLDivElement).contains(parentElement);
+      typeof menuDropdown !== 'undefined' &&
+      parentElement &&
+      (menuDropdown.current as HTMLDivElement).contains(parentElement);
     const allSiblings = parentElement ? [...parentElement.children] : [];
     const columnsCount =
       isColorOptionsMenu && getElementStyle(parentElement, 'grid-template-columns').split(' ').length;
@@ -488,7 +502,8 @@ const DefaultColorPicker = (props: ColorPickerProps) => {
     [k1, k2, k3].forEach(k => action(k, 'keydown', handleKnobs as EventListener));
     if (parent) action(parent, 'focusout', handleBlur as EventListener);
     // when no presets/keywords, the menu won't be rendered
-    if (typeof menuDropdown !== 'undefined') action((menuDropdown.current as HTMLElement), 'keydown', menuKeyHandler as EventListener);
+    if (typeof menuDropdown !== 'undefined')
+      action(menuDropdown.current as HTMLElement, 'keydown', menuKeyHandler as EventListener);
   };
 
   const hideTransitionEnd = () => {
@@ -535,7 +550,7 @@ const DefaultColorPicker = (props: ColorPickerProps) => {
   const hidePicker = () => {
     setPickerShown(false);
     reflow(pickerDropdown.current as HTMLDivElement);
-    emulateTransitionEnd((pickerDropdown.current as HTMLDivElement), hideTransitionEnd);
+    emulateTransitionEnd(pickerDropdown.current as HTMLDivElement, hideTransitionEnd);
   };
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const newValue = e.currentTarget.value;
@@ -610,7 +625,9 @@ const DefaultColorPicker = (props: ColorPickerProps) => {
           aria-haspopup={true}
           onClick={showPicker}
         >
-          <span className="v-hidden">{`${locale().pickerLabel}. ${locale().formatLabel}: ${format.toUpperCase()}`}</span>
+          <span className="v-hidden">{`${locale().pickerLabel}. ${
+            locale().formatLabel
+          }: ${format.toUpperCase()}`}</span>
         </button>
         <input
           ref={input}

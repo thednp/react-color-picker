@@ -9,7 +9,7 @@ export default defineConfig({
   plugins: [
     react(),
     // svg({ defaultImport: 'component' })
-    svg({ exportAsDefault: true })
+    svg({ exportAsDefault: true }),
   ],
   server: {
     port: 4000,
