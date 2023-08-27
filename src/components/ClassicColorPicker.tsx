@@ -1,14 +1,13 @@
 import ColorPicker from '@thednp/color-picker';
-// import '@thednp/color-picker/src/scss/color-picker.scss';
 import './color-picker.css';
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { addListener, removeListener } from '@thednp/event-listener';
-import type { ColorPickerProps } from '../types/ColorPickerProps';
+import type { ColorPickerProps } from '../types/types';
 
 let pickerId = 0;
 
-const ClassicColorPicker = (props: ColorPickerProps) => {
+const ClassicColorPicker = (props: ColorPickerProps & { label: string }) => {
   const target = useRef<HTMLInputElement>(undefined as any);
   const [instance, setInstance] = useState<ColorPicker>(undefined as any);
   const id = props.id ? props.id : `picker-${pickerId}`;

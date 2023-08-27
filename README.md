@@ -1,4 +1,4 @@
-<!-- TODO [<img width="100%" src="banner.svg" alt="react-color-picker">](https://react-color-picker.netlify.app/) -->
+[<img width="100%" src="experiments/banner.svg" alt="react-color-picker">](https://react-color-picker.netlify.app/)
 
 # React Color Picker
 <!-- [![ci](https://github.com/thednp/react-color-picker/actions/workflows/ci.yml/badge.svg)](https://github.com/thednp/react-color-picker/actions/workflows/ci.yml) -->

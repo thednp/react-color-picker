@@ -6,6 +6,6 @@ export const tsup: Options = {
   dts: true,
   format: ['esm'],
   entryPoints: ['src/index.tsx'],
-  outDir: 'example/dist',
+  outDir: 'dist',
   target: 'esnext',
 };

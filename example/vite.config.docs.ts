@@ -3,18 +3,22 @@
 
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
+// import svg from '@svgx/vite-plugin-react';
 import svg from 'vite-plugin-svgr';
 
 export default defineConfig({
+  base: './',
   plugins: [
     react(),
     // svg({ defaultImport: 'component' })
     svg({ exportAsDefault: true })
   ],
   server: {
-    port: 4000,
+    port: 3000,
   },
   build: {
     target: 'esnext',
+    outDir: '../docs',
+    emptyOutDir: true,
   },
 });
