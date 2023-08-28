@@ -1,13 +1,11 @@
 import Color from '@thednp/color';
 import React from 'react';
 import { createContext, useContext } from 'react';
-import type { LanguagePack } from '../types/types';
+import type {LanguagePack, SupportedFormat, Accessor } from '../types/types';
 import initialControlPositions from '../util/initialControlPositions';
 
-type Accessor<T> = () => T;
-
 export const PickerContext = createContext({
-  format: 'rgb',
+  format: (() => 'rgb') as Accessor<SupportedFormat>,
   color: {} as Color,
   setColor: (() => {}) as React.Dispatch<React.SetStateAction<Color>>,
   locale: (() => {}) as Accessor<LanguagePack>,

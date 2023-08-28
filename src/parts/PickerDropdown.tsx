@@ -1,14 +1,5 @@
 import Color from '@thednp/color';
-import {
-  createElement,
-  useEffect,
-  useState,
-  startTransition,
-  Suspense,
-  ChangeEvent,
-  RefObject,
-  forwardRef,
-} from 'react';
+import { createElement, Suspense, ChangeEvent, forwardRef, ForwardedRef, useId } from 'react';
 import type { ControlProps, PickerProps } from '../types/types';
 import { usePickerContext } from './ColorPickerContext';
 
@@ -86,9 +77,9 @@ const ColorControls = (props: ControlProps) => {
   );
 };
 
-const RGBForm = forwardRef((props: PickerProps, ref: RefObject<HTMLElement>) => {
+const RGBForm = forwardRef((props: PickerProps, ref: ForwardedRef<HTMLDivElement>) => {
   const { locale, format, color, update, alpha } = usePickerContext();
-  const { id } = props;
+  const id = useId();
   const rgb = () => {
     let { r, g, b, a } = color.toRgb();
     [r, g, b] = [r, g, b].map(roundPart) as [number, number, number];
@@ -97,28 +88,28 @@ const RGBForm = forwardRef((props: PickerProps, ref: RefObject<HTMLElement>) => 
   };
   const stringValue = () => {
     const { r, g, b } = rgb();
-    return `${format.toUpperCase()}: ${r} ${g} ${b}`;
+    return `${format().toUpperCase()}: ${r} ${g} ${b}`;
   };
 
   const changeRed = (e: ChangeEvent<HTMLInputElement>) =>
-    update(new Color({ ...color, r: Number(e.target.value) }, format));
+    update(new Color({ ...color, r: Number(e.target.value) }, format()));
   const changeGreen = (e: ChangeEvent<HTMLInputElement>) =>
-    update(new Color({ ...color, g: Number(e.target.value) }, format));
+    update(new Color({ ...color, g: Number(e.target.value) }, format()));
   const changeBlue = (e: ChangeEvent<HTMLInputElement>) =>
-    update(new Color({ ...color, b: Number(e.target.value) }, format));
+    update(new Color({ ...color, b: Number(e.target.value) }, format()));
   const changeAlpha = (e: ChangeEvent<HTMLInputElement>) =>
-    update(new Color({ ...color, a: Number(e.target.value) / 100 }, format));
+    update(new Color({ ...color, a: Number(e.target.value) / 100 }, format()));
 
   return (
     <div className={`color-dropdown picker${props.className}`} role="group" id={`${id}-picker`} ref={ref}>
       <ColorControls stringValue={stringValue()} />
       <div className="color-form rgb">
-        <label htmlFor={`color_rgb_red_${id}`}>
+        <label htmlFor={`color:rgb:red:${id}`}>
           <span aria-hidden={true}>R:</span>
           <span className="v-hidden">{locale().redLabel}</span>
         </label>
         <input
-          id={`color_rgb_red_${id}`}
+          id={`color:rgb:red${id}`}
           type="number"
           className="color-input red"
           autoComplete="off"
@@ -129,12 +120,12 @@ const RGBForm = forwardRef((props: PickerProps, ref: RefObject<HTMLElement>) => 
           value={rgb().r}
           onChange={changeRed}
         />
-        <label htmlFor={`color_rgb_green_${id}`}>
+        <label htmlFor={`color:rgb:green${id}`}>
           <span aria-hidden={true}>G:</span>
           <span className="v-hidden">{locale().greenLabel}</span>
         </label>
         <input
-          id={`color_rgb_green_${id}`}
+          id={`color:rgb:green${id}`}
           type="number"
           className="color-input green"
           autoComplete="off"
@@ -145,12 +136,12 @@ const RGBForm = forwardRef((props: PickerProps, ref: RefObject<HTMLElement>) => 
           value={rgb().g}
           onChange={changeGreen}
         />
-        <label htmlFor={`color_rgb_blue_${id}`}>
+        <label htmlFor={`color:rgb:blue${id}`}>
           <span aria-hidden={true}>B:</span>
           <span className="v-hidden">{locale().blueLabel}</span>
         </label>
         <input
-          id={`color_rgb_blue_${id}`}
+          id={`color:rgb:blue${id}`}
           type="number"
           className="color-input blue"
           autoComplete="off"
@@ -161,12 +152,12 @@ const RGBForm = forwardRef((props: PickerProps, ref: RefObject<HTMLElement>) => 
           value={rgb().b}
           onChange={changeBlue}
         />
-        <label htmlFor={`color_rgb_alpha_${id}`}>
+        <label htmlFor={`color:rgb:alpha${id}`}>
           <span aria-hidden={true}>A:</span>
           <span className="v-hidden">{locale().alphaLabel}</span>
         </label>
         <input
-          id={`color_rgb_alpha_${id}`}
+          id={`color:rgb:alpha${id}`}
           type="number"
           className="color-input alpha"
           autoComplete="off"
@@ -182,9 +173,9 @@ const RGBForm = forwardRef((props: PickerProps, ref: RefObject<HTMLElement>) => 
   );
 });
 
-const HSLForm = forwardRef((props: PickerProps, ref: RefObject<HTMLElement>) => {
+const HSLForm = forwardRef((props: PickerProps, ref: ForwardedRef<HTMLDivElement>) => {
   const { format, locale, color, update, alpha } = usePickerContext();
-  const { id } = props;
+  const id = useId();
   const hsl = () => {
     let { h, s, l, a } = color.toHsl();
     [h, s, l] = [h, s, l].map((cl, i) => roundPart(cl * (i ? 100 : 360))) as [number, number, number];
@@ -193,29 +184,29 @@ const HSLForm = forwardRef((props: PickerProps, ref: RefObject<HTMLElement>) => 
   };
   const stringValue = () => {
     const { h, s, l } = hsl();
-    return `${format.toUpperCase()}: ${h}° ${s}% ${l}%`;
+    return `${format().toUpperCase()}: ${h}° ${s}% ${l}%`;
   };
 
   const changeHue = (e: ChangeEvent<HTMLInputElement>) =>
-    update(new Color({ ...color, h: Number(e.target.value) }, format));
+    update(new Color({ ...color, h: Number(e.target.value) }, format()));
   const changeSaturation = (e: ChangeEvent<HTMLInputElement>) =>
-    update(new Color({ ...color, s: Number(e.target.value) }, format));
+    update(new Color({ ...color, s: Number(e.target.value) }, format()));
   const changeLightness = (e: ChangeEvent<HTMLInputElement>) =>
-    update(new Color({ ...color, l: Number(e.target.value) }, format));
+    update(new Color({ ...color, l: Number(e.target.value) }, format()));
   const changeAlpha = (e: ChangeEvent<HTMLInputElement>) =>
-    update(new Color({ ...color, a: Number(e.target.value) / 100 }, format));
+    update(new Color({ ...color, a: Number(e.target.value) / 100 }, format()));
 
   return (
     <div className={`color-dropdown picker${props.className}`} role="group" id={`${id}-picker`} ref={ref}>
       <ColorControls stringValue={stringValue()} />
 
       <div className="color-form hsl">
-        <label htmlFor={`color_hsl_hue_${id}`}>
+        <label htmlFor={`color:hsl:hue${id}`}>
           <span aria-hidden={true}>H:</span>
           <span className="v-hidden">{locale().hueLabel}</span>
         </label>
         <input
-          id={`color_hsl_hue_${id}`}
+          id={`color:hsl:hue${id}`}
           type="number"
           className="color-input hue"
           autoComplete="off"
@@ -226,12 +217,12 @@ const HSLForm = forwardRef((props: PickerProps, ref: RefObject<HTMLElement>) => 
           value={hsl().h}
           onChange={changeHue}
         />
-        <label htmlFor={`color_hsl_saturation_${id}`}>
+        <label htmlFor={`color:hsl:saturation${id}`}>
           <span aria-hidden={true}>S:</span>
           <span className="v-hidden">{locale().saturationLabel}</span>
         </label>
         <input
-          id={`color_hsl_saturation_${id}`}
+          id={`color:hsl:saturation${id}`}
           type="number"
           className="color-input saturation"
           autoComplete="off"
@@ -242,12 +233,12 @@ const HSLForm = forwardRef((props: PickerProps, ref: RefObject<HTMLElement>) => 
           value={hsl().s}
           onChange={changeSaturation}
         />
-        <label htmlFor={`color_hsl_lightness_${id}`}>
+        <label htmlFor={`color:hsl:lightness${id}`}>
           <span aria-hidden={true}>L:</span>
           <span className="v-hidden">{locale().lightnessLabel}</span>
         </label>
         <input
-          id={`color_hsl_lightness_${id}`}
+          id={`color:hsl:lightness${id}`}
           type="number"
           className="color-input lightness"
           autoComplete="off"
@@ -258,12 +249,12 @@ const HSLForm = forwardRef((props: PickerProps, ref: RefObject<HTMLElement>) => 
           value={hsl().l}
           onChange={changeLightness}
         />
-        <label htmlFor={`color_hsl_alpha_${id}`}>
+        <label htmlFor={`color:hsl:alpha:${id}`}>
           <span aria-hidden={true}>A:</span>
           <span className="v-hidden">{locale().alphaLabel}</span>
         </label>
         <input
-          id={`color_hsl_alpha_${id}`}
+          id={`color:hsl:alpha:${id}`}
           type="number"
           className="color-input alpha"
           autoComplete="off"
@@ -279,9 +270,9 @@ const HSLForm = forwardRef((props: PickerProps, ref: RefObject<HTMLElement>) => 
   );
 });
 
-const HWBForm = forwardRef((props: PickerProps, ref: RefObject<HTMLInputElement>) => {
+const HWBForm = forwardRef((props: PickerProps, ref: ForwardedRef<HTMLDivElement>) => {
   const { locale, format, color, update, alpha } = usePickerContext();
-  const { id } = props;
+  const id = useId();
   const hwb = () => {
     let { h, w, b, a } = color.toHwb();
     [h, w, b] = [h, w, b].map((cl, i) => roundPart(cl * (i ? 100 : 360))) as [number, number, number];
@@ -290,29 +281,29 @@ const HWBForm = forwardRef((props: PickerProps, ref: RefObject<HTMLInputElement>
   };
   const stringValue = () => {
     const { h, w, b } = hwb();
-    return `${format.toUpperCase()}: ${h}° ${w}% ${b}%`;
+    return `${format().toUpperCase()}: ${h}° ${w}% ${b}%`;
   };
 
   const changeHue = (e: ChangeEvent<HTMLInputElement>) =>
-    update(new Color({ ...color, h: Number((e.currentTarget as HTMLInputElement).value) }, format));
+    update(new Color({ ...color, h: Number((e.currentTarget as HTMLInputElement).value) }, format()));
   const changeWhiteness = (e: ChangeEvent<HTMLInputElement>) =>
-    update(new Color({ ...color, w: Number((e.currentTarget as HTMLInputElement).value) }, format));
+    update(new Color({ ...color, w: Number((e.currentTarget as HTMLInputElement).value) }, format()));
   const changeBlackness = (e: ChangeEvent<HTMLInputElement>) =>
-    update(new Color({ ...color, b: Number((e.currentTarget as HTMLInputElement).value) }, format));
+    update(new Color({ ...color, b: Number((e.currentTarget as HTMLInputElement).value) }, format()));
   const changeAlpha = (e: ChangeEvent<HTMLInputElement>) =>
-    update(new Color({ ...color, a: Number((e.currentTarget as HTMLInputElement).value) / 100 }, format));
+    update(new Color({ ...color, a: Number((e.currentTarget as HTMLInputElement).value) / 100 }, format()));
 
   return (
     <div className={`color-dropdown picker${props.className}`} role="group" id={`${id}-picker`} ref={ref}>
       <ColorControls stringValue={stringValue()} />
 
       <div className="color-form hwb">
-        <label htmlFor={`color_hwb_hue_${id}`}>
+        <label htmlFor={`color:hwb:hue${id}`}>
           <span aria-hidden={true}>H:</span>
           <span className="v-hidden">{locale().hueLabel}</span>
         </label>
         <input
-          id={`color_hwb_hue_${id}`}
+          id={`color:hwb:hue${id}`}
           type="number"
           className="color-input hue"
           autoComplete="off"
@@ -323,12 +314,12 @@ const HWBForm = forwardRef((props: PickerProps, ref: RefObject<HTMLInputElement>
           value={hwb().h}
           onChange={changeHue}
         />
-        <label htmlFor={`color_hwb_whiteness_${id}`}>
+        <label htmlFor={`color:hwb:whiteness${id}`}>
           <span aria-hidden={true}>W:</span>
           <span className="v-hidden">{locale().whitenessLabel}</span>
         </label>
         <input
-          id={`color_hwb_whiteness_${id}`}
+          id={`color:hwb:whiteness${id}`}
           type="number"
           className="color-input whiteness"
           autoComplete="off"
@@ -339,12 +330,12 @@ const HWBForm = forwardRef((props: PickerProps, ref: RefObject<HTMLInputElement>
           value={hwb().w}
           onChange={changeWhiteness}
         />
-        <label htmlFor={`color_hwb_blackness-${id}`}>
+        <label htmlFor={`color:hwb:blackness${id}`}>
           <span aria-hidden={true}>B:</span>
           <span className="v-hidden">{locale().blacknessLabel}</span>
         </label>
         <input
-          id={`color_hwb_blackness-${id}`}
+          id={`color:hwb:blackness${id}`}
           type="number"
           className="color-input blackness"
           autoComplete="off"
@@ -355,12 +346,12 @@ const HWBForm = forwardRef((props: PickerProps, ref: RefObject<HTMLInputElement>
           value={hwb().b}
           onChange={changeBlackness}
         />
-        <label htmlFor={`color_hwb_alpha_${id}`}>
+        <label htmlFor={`color:hwb:alpha${id}`}>
           <span aria-hidden={true}>A:</span>
           <span className="v-hidden">{locale().alphaLabel}</span>
         </label>
         <input
-          id={`color_hwb_alpha_${id}`}
+          id={`color:hwb:alpha${id}`}
           type="number"
           className="color-input alpha"
           autoComplete="off"
@@ -376,14 +367,15 @@ const HWBForm = forwardRef((props: PickerProps, ref: RefObject<HTMLInputElement>
   );
 });
 
-const HEXForm = forwardRef((props: PickerProps, ref: RefObject<HTMLInputElement>) => {
+const HEXForm = forwardRef((props: PickerProps, ref: ForwardedRef<HTMLDivElement>) => {
   const { format, locale, color, update } = usePickerContext();
-  const { id, className } = props;
+  const { className } = props;
+  const id = useId();
   const hex = () => color.toHex();
   const stringValue = () => `${locale().hexLabel}: ${hex().toUpperCase()}`;
   const changeHex = (e: ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
-    const newColor = new Color(newValue, format);
+    const newColor = new Color(newValue, format());
     if (newValue && newValue.length && newColor.isValid) {
       update(newColor);
     }
@@ -394,12 +386,12 @@ const HEXForm = forwardRef((props: PickerProps, ref: RefObject<HTMLInputElement>
       <ColorControls stringValue={stringValue()} />
 
       <div className={'color-form hex'}>
-        <label htmlFor="color_hex_hex_1">
+        <label htmlFor={`color:hex${id}`}>
           <span aria-hidden={true}>#:</span>
           <span className="v-hidden">{locale().hexLabel}</span>
         </label>
         <input
-          id={`color_hex_${id}`}
+          id={`color:hex${id}`}
           type="text"
           className="color-input hex"
           autoComplete="off"
@@ -419,11 +411,10 @@ const PartSelection = {
   hwb: HWBForm,
 };
 
-const PickerDropdown = forwardRef((props: PickerProps, ref: RefObject<HTMLElement>) => {
-  // console.log(props, ref)
+const PickerDropdown = forwardRef((props: PickerProps, ref: ForwardedRef<HTMLDivElement>) => {
   const { format } = usePickerContext();
 
-  return <Suspense>{createElement(PartSelection[format], { ...props, ref })}</Suspense>;
+  return <Suspense>{createElement(PartSelection[format()], {...props, ref})}</Suspense>;
 });
 
 export default PickerDropdown;

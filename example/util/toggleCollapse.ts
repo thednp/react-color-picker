@@ -1,4 +1,4 @@
-import { MouseEventHandler, MouseEvent } from 'react';
+import { MouseEventHandler, MouseEvent } from "react";
 
 type Callback = (t?: HTMLElement) => void;
 const Timers = new Map<HTMLElement, NodeJS.Timeout>();
@@ -78,9 +78,7 @@ export const hideCollapse = (collapse: HTMLElement, callback?: Callback) => {
   }
 };
 
-export const toggleCollapse: MouseEventHandler<HTMLButtonElement> = (
-  e: MouseEvent<HTMLButtonElement> & { target: Element },
-) => {
+export const toggleCollapse: MouseEventHandler<HTMLButtonElement> = (e: MouseEvent<HTMLButtonElement> & { target: Element }) => {
   e.preventDefault();
   const btn = e.target.closest('button') as HTMLButtonElement;
   const collapse = document.getElementById(btn.dataset.target as string);

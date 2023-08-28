@@ -1,8 +1,5 @@
 {
   "extends": "../tsconfig.json",
-  "compilerOptions": {
-    "types": ["./vite-env-override.d.ts", "vite-plugin-svgr/client", "vite/client"]
-  },
   "include": ["./**/*"],
   "exclude": ["node_modules", "dist"]
 }

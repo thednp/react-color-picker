@@ -66,8 +66,6 @@ const ClassicColorPicker = (props: ColorPickerProps & { label: string }) => {
           placeholder={props.placeholder || 'Select colour'}
           value={colorValue}
           onChange={e => {
-            console.log(instance.value, e.target.value);
-            // props?.onChange ? props.onChange(colorValue) : null
             props.onChange ? props.onChange(e.target.value) : null;
           }}
           data-format={props.format || 'rgb'}

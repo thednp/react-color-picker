@@ -1,8 +1,6 @@
-import type { MouseEventHandler, MouseEvent } from 'react';
+import type { MouseEventHandler, MouseEvent } from "react";
 
-const copyToClipboard: MouseEventHandler<HTMLButtonElement> = (
-  e: MouseEvent<HTMLButtonElement> & { target: Element },
-) => {
+const copyToClipboard: MouseEventHandler<HTMLButtonElement> = (e: MouseEvent<HTMLButtonElement> & { target: Element}) => {
   const btn = e.target.closest('button') as HTMLButtonElement;
   const pre = document.getElementById(btn.dataset.target as string);
   if (pre) {

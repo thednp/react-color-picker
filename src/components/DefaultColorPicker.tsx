@@ -20,32 +20,35 @@ import {
   ObjectKeys,
 } from '@thednp/shorty';
 
-import { useState, useEffect, startTransition, useMemo, useRef, ChangeEvent } from 'react';
+import { useState, useEffect, startTransition, useMemo, useRef, ChangeEvent, useId, Suspense } from 'react';
 import type { ColorPickerProps } from '../types/types';
-import PickerDropdown from '../parts/PickerDropdown';
-import MenuDropdown from '../parts/MenuDropdown';
 import { PickerContext } from '../parts/ColorPickerContext';
 import initialControlPositions from '../util/initialControlPositions';
 import { languagePacks, getLanguageStrings } from '../locales/getLanguageStrings';
-import Arrow from '../assets/arrow.svg';
+import { ReactComponent as Arrow} from '../assets/arrow.svg';
+
+import PickerDropdown from '../parts/PickerDropdown';
+import MenuDropdown from '../parts/MenuDropdown';
+// const PickerDropdown = lazy(() => import('../parts/PickerDropdown'));
+// const MenuDropdown = lazy(() => import('../parts/MenuDropdown'));
 
 // import default color picker style
 import './color-picker.css';
 
-let pickerCount = 0;
 const { roundPart } = Color;
 
 const DefaultColorPicker = (props: ColorPickerProps) => {
-  const id = props.id ? props.id : `color-picker-${pickerCount}`;
-  const lang = props.lang || 'en';
-  const theme = props.theme || 'dark';
-  const format = props.format || 'rgb';
-  const initValue = props.value || 'red';
+  // const { value, setValue, color, setColor } = usePickerContext();
+  const id = () => props.id || `color:picker${useId()}`;
+  const lang = () => props.lang || 'en';
+  const theme = () => props.theme || 'dark';
+  const format = () => props.format || 'rgb';
+  const initValue = () => props.value || 'red';
   const locale = () => {
     if (props.lang && 'en' !== props.lang && ObjectKeys(languagePacks).includes(props.lang)) {
       return getLanguageStrings(props.lang);
     }
-    const langPack = getLanguageStrings(lang);
+    const langPack = getLanguageStrings(lang());
 
     if (props.locale && ObjectKeys(props.locale).length === 35) {
       ObjectAssign(langPack, props.locale);
@@ -56,11 +59,12 @@ const DefaultColorPicker = (props: ColorPickerProps) => {
   const colorPresets = () => props.colorPresets;
   const colorKeywords = () => props.colorKeywords;
   const placeholder = () =>
-    props.placeholder ? props.placeholder : locale().placeholder.replace(/%/g, format.toUpperCase());
-  const [offsetWidth, setOffsetWidth] = useState(300);
-  const [offsetHeight, setOffsetHeight] = useState(300);
-  const [value, setValue] = useState(initValue);
-  const [color, setColor] = useState(new Color(value, format));
+    props.placeholder ? props.placeholder : locale().placeholder.replace(/%/g, format().toUpperCase());
+  const offsetHeight = () => window.innerWidth >= 980 ? 300 : 230;
+  const offsetWidth = () => window.innerWidth >= 980 ? 300 : 230;
+
+  const [value, setValue] = useState(initValue());
+  const [color, setColor] = useState(new Color(value, format()));
   const [open, setOpen] = useState(null as HTMLDivElement | null);
   const [drag, setDrag] = useState<HTMLElement | null>(null);
   const [pickerShown, setPickerShown] = useState(false);
@@ -77,31 +81,23 @@ const DefaultColorPicker = (props: ColorPickerProps) => {
       'color-picker',
       ...[props.className ? props.className.split(/\s/) : ''],
       isDark() ? 'txt-dark' : 'txt-light',
-      theme === 'light' ? ' light' : '',
+      theme() === 'light' ? ' light' : '',
       open ? 'open' : '',
     ]
       .filter(c => c)
       .join(' ');
-  pickerCount += 1;
 
-  let pickerDropdown = useRef<HTMLElement>(null);
-  let menuDropdown = useRef<HTMLDivElement>(null);
-  let input = useRef<HTMLInputElement>(null);
+  const mainRef = useRef<HTMLDivElement>(null);
+  const pickerDropdown = useRef<HTMLDivElement>(null);
+  const menuDropdown = useRef<HTMLDivElement>(null);
+  const input = useRef<HTMLInputElement>(null);
 
   const controls = () => {
-    return [...getElementsByClassName('color-control', pickerDropdown.current as ParentNode)] as [
-      HTMLElement,
-      HTMLElement,
-      HTMLElement,
-    ];
+    return [...getElementsByClassName('color-control', pickerDropdown.current as ParentNode)] as [HTMLElement, HTMLElement, HTMLElement];
   };
 
   const visuals = () => {
-    return [...getElementsByClassName('visual-control', pickerDropdown.current as ParentNode)] as [
-      HTMLElement,
-      HTMLElement,
-      HTMLElement,
-    ];
+    return [...getElementsByClassName('visual-control', pickerDropdown.current as ParentNode)] as [HTMLElement, HTMLElement, HTMLElement];
   };
 
   const knobs = () => {
@@ -112,16 +108,12 @@ const DefaultColorPicker = (props: ColorPickerProps) => {
   };
 
   const inputs = () => {
-    return [...getElementsByClassName('color-input', pickerDropdown.current as ParentNode)] as [
-      HTMLElement,
-      HTMLElement,
-      HTMLElement,
-    ];
+    return [...getElementsByClassName('color-input', pickerDropdown.current as ParentNode)] as [HTMLElement, HTMLElement, HTMLElement];
   };
-  const hue = () => controlPositions.c2y / offsetHeight;
+  const hue = () => controlPositions.c2y / offsetHeight();
   const lightness = () => roundPart(color.toHsv().v * 100);
   const saturation = () => roundPart(color.toHsv().s * 100);
-  const alpha = () => 1 - controlPositions.c3y / offsetHeight;
+  const alpha = () => 1 - controlPositions.c3y / offsetHeight();
   const fill = () => {
     return new Color({
       h: hue(),
@@ -168,7 +160,7 @@ const DefaultColorPicker = (props: ColorPickerProps) => {
     const hsl = color.toHsl();
     const hsv = color.toHsv();
     const hue = roundPart(hsl.h * 360);
-    const saturationSource = format === 'hsl' ? hsl.s : hsv.s;
+    const saturationSource = format() === 'hsl' ? hsl.s : hsv.s;
     const saturation = roundPart(saturationSource * 100);
     const lightness = roundPart(hsl.l * 100);
     const hsvl = hsv.v * 100;
@@ -217,10 +209,10 @@ const DefaultColorPicker = (props: ColorPickerProps) => {
     const saturation = hsv.s;
     const lightness = hsv.v;
     setControlPositions({
-      c1x: saturation * offsetWidth,
-      c1y: (1 - lightness) * offsetHeight,
-      c2y: hue * offsetHeight,
-      c3y: (1 - alpha) * offsetHeight,
+      c1x: saturation * offsetWidth(),
+      c1y: (1 - lightness) * offsetHeight(),
+      c2y: hue * offsetHeight(),
+      c3y: (1 - alpha) * offsetHeight(),
     });
   };
   const hideDropdown = () => {
@@ -239,9 +231,7 @@ const DefaultColorPicker = (props: ColorPickerProps) => {
     const { target, code } = e;
     const { previousElementSibling, nextElementSibling, parentElement } = target;
     const isColorOptionsMenu =
-      typeof menuDropdown !== 'undefined' &&
-      parentElement &&
-      (menuDropdown.current as HTMLDivElement).contains(parentElement);
+      typeof menuDropdown !== 'undefined' && parentElement && (menuDropdown.current as HTMLDivElement).contains(parentElement);
     const allSiblings = parentElement ? [...parentElement.children] : [];
     const columnsCount =
       isColorOptionsMenu && getElementStyle(parentElement, 'grid-template-columns').split(' ').length;
@@ -319,10 +309,9 @@ const DefaultColorPicker = (props: ColorPickerProps) => {
   const pointerUp = (e: PointerEvent) => {
     const [v1] = visuals();
     const doc = getDocument(v1);
-    const [parent] = getElementsByClassName('color-picker open', doc);
     const selection = doc.getSelection();
 
-    if (!drag && (!selection || !selection.toString().length) && (!parent || !parent.contains(e.target as Node))) {
+    if (!drag && (!selection || !selection.toString().length) && (!mainRef.current || !mainRef.current.contains(e.target as Node))) {
       hideDropdown();
     }
 
@@ -334,7 +323,7 @@ const DefaultColorPicker = (props: ColorPickerProps) => {
 
     if (!drag) return;
 
-    const controlRect = getBoundingClientRect(drag as HTMLElement);
+    const controlRect = getBoundingClientRect(drag );
     const win = getDocumentElement(v1);
     const offsetX = pageX - win.scrollLeft - controlRect.left;
     const offsetY = pageY - win.scrollTop - controlRect.top;
@@ -407,16 +396,16 @@ const DefaultColorPicker = (props: ColorPickerProps) => {
   const changeControl1 = (X: number, Y: number) => {
     let [offsetX, offsetY] = [0, 0];
 
-    if (X > offsetWidth) offsetX = offsetWidth;
+    if (X > offsetWidth()) offsetX = offsetWidth();
     else if (X >= 0) offsetX = X;
 
-    if (Y > offsetHeight) offsetY = offsetHeight;
+    if (Y > offsetHeight()) offsetY = offsetHeight();
     else if (Y >= 0) offsetY = Y;
 
-    const hue = controlPositions.c2y / offsetHeight;
-    const saturation = offsetX / offsetWidth;
-    const lightness = 1 - offsetY / offsetHeight;
-    const alpha = 1 - controlPositions.c3y / offsetHeight;
+    const hue = controlPositions.c2y / offsetHeight();
+    const saturation = offsetX / offsetWidth();
+    const lightness = 1 - offsetY / offsetHeight();
+    const alpha = 1 - controlPositions.c3y / offsetHeight();
 
     // new color
     const newColor = new Color(
@@ -426,7 +415,7 @@ const DefaultColorPicker = (props: ColorPickerProps) => {
         v: lightness,
         a: alpha,
       },
-      format,
+      format(),
     );
 
     setValue(newColor.toString());
@@ -441,13 +430,13 @@ const DefaultColorPicker = (props: ColorPickerProps) => {
   const changeControl2 = (Y: number) => {
     let offsetY = 0;
 
-    if (Y > offsetHeight) offsetY = offsetHeight;
+    if (Y > offsetHeight()) offsetY = offsetHeight();
     else if (Y >= 0) offsetY = Y;
 
-    const hue = offsetY / offsetHeight;
-    const saturation = controlPositions.c1x / offsetWidth;
-    const lightness = 1 - controlPositions.c1y / offsetHeight;
-    const alpha = 1 - controlPositions.c3y / offsetHeight;
+    const hue = offsetY / offsetHeight();
+    const saturation = controlPositions.c1x / offsetWidth();
+    const lightness = 1 - controlPositions.c1y / offsetHeight();
+    const alpha = 1 - controlPositions.c3y / offsetHeight();
 
     // new color
     const newColor = new Color(
@@ -457,7 +446,7 @@ const DefaultColorPicker = (props: ColorPickerProps) => {
         v: lightness,
         a: alpha,
       },
-      format,
+      format(),
     );
 
     setValue(newColor.toString());
@@ -471,12 +460,12 @@ const DefaultColorPicker = (props: ColorPickerProps) => {
   const changeAlpha = (Y: number) => {
     let offsetY = 0;
 
-    if (Y > offsetHeight) offsetY = offsetHeight;
+    if (Y > offsetHeight()) offsetY = offsetHeight();
     else if (Y >= 0) offsetY = Y;
 
     // update color alpha
-    const alpha = 1 - offsetY / offsetHeight;
-    const newColor = new Color(color.setAlpha(alpha), format);
+    const alpha = 1 - offsetY / offsetHeight();
+    const newColor = new Color(color.setAlpha(alpha), format());
 
     setValue(newColor.toString());
     setColor(newColor);
@@ -492,7 +481,7 @@ const DefaultColorPicker = (props: ColorPickerProps) => {
     const doc = win.document;
     const [c1, c2, c3] = controls();
     const [k1, k2, k3] = knobs();
-    const parent = c1.closest('.color-picker');
+    // const parent = c1.closest('.color-picker');
     action(win, 'scroll', handleScroll);
     action(win, 'resize', handleResize);
     action(doc, 'keyup', handleDismiss as EventListener);
@@ -500,10 +489,9 @@ const DefaultColorPicker = (props: ColorPickerProps) => {
     action(doc, 'pointermove', pointerMove as EventListener);
     [c1, c2, c3].forEach(c => action(c, 'pointerdown', pointerDown as EventListener));
     [k1, k2, k3].forEach(k => action(k, 'keydown', handleKnobs as EventListener));
-    if (parent) action(parent, 'focusout', handleBlur as EventListener);
+    if (typeof mainRef.current !== 'undefined') action(mainRef.current as HTMLElement, 'focusout', handleBlur as EventListener);
     // when no presets/keywords, the menu won't be rendered
-    if (typeof menuDropdown !== 'undefined')
-      action(menuDropdown.current as HTMLElement, 'keydown', menuKeyHandler as EventListener);
+    if (typeof menuDropdown.current !== 'undefined') action((menuDropdown.current as HTMLElement), 'keydown', menuKeyHandler as EventListener);
   };
 
   const hideTransitionEnd = () => {
@@ -550,32 +538,27 @@ const DefaultColorPicker = (props: ColorPickerProps) => {
   const hidePicker = () => {
     setPickerShown(false);
     reflow(pickerDropdown.current as HTMLDivElement);
-    emulateTransitionEnd(pickerDropdown.current as HTMLDivElement, hideTransitionEnd);
+    emulateTransitionEnd((pickerDropdown.current as HTMLDivElement), hideTransitionEnd);
   };
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const newValue = e.currentTarget.value;
-    const newColor = new Color(newValue, format);
+    const newColor = new Color(newValue, format());
     if (newValue && newValue.length && newColor.isValid) {
       update(newColor);
     }
   };
-  const handleResize = () => {
-    const [v1] = visuals();
-    const getHeight = window.innerWidth >= 980 ? 300 : 230;
-    const getWidth = typeof v1 !== 'undefined' && v1.offsetWidth ? v1.offsetWidth : getHeight;
-    setOffsetHeight(getHeight);
-    setOffsetWidth(getWidth);
-    startTransition(updateControlPositions);
-  };
+  const handleResize = () => startTransition(updateControlPositions);
   const update = (newColor: Color) => {
-    setColor(newColor);
-    setValue(newColor.toString());
+    startTransition(() => {
+      setColor(newColor);
+      setValue(newColor.toString());
+    })
   };
 
   useEffect(() => {
     if (pickerShown || menuShown) {
       toggleEvents(true);
-    } else if (!pickerShown && !menuShown) {
+    } else {
       toggleEvents();
     }
 
@@ -587,9 +570,10 @@ const DefaultColorPicker = (props: ColorPickerProps) => {
       props.onChange(value);
     }
   }, [value]);
+
   useMemo(() => {
-    update(new Color(value, format));
-  }, [format]);
+    update(new Color(value, format()));
+  }, [format()]);
 
   return (
     <PickerContext.Provider
@@ -618,53 +602,52 @@ const DefaultColorPicker = (props: ColorPickerProps) => {
         fillGradient,
       }}
     >
-      <div className={className()} lang={lang}>
-        <button
-          className="picker-toggle btn-appearance"
-          aria-expanded={pickerShown}
-          aria-haspopup={true}
-          onClick={showPicker}
-        >
-          <span className="v-hidden">{`${locale().pickerLabel}. ${
-            locale().formatLabel
-          }: ${format.toUpperCase()}`}</span>
-        </button>
-        <input
-          ref={input}
-          type="text"
-          name={id}
-          id={id}
-          className="color-preview btn-appearance"
-          autoComplete="off"
-          spellCheck={false}
-          placeholder={placeholder()}
-          value={value}
-          tabIndex={-1}
-          style={{ backgroundColor: value }}
-          onFocus={showPicker}
-          onChange={handleChange}
-        />
-        <PickerDropdown id={id} className={pickerClass()} ref={pickerDropdown} />
-
-        <MenuDropdown
-          id={id}
-          className={menuClass()}
-          ref={menuDropdown}
-          colorPresets={colorPresets()}
-          colorKeywords={colorKeywords()}
-        >
+      <Suspense>
+        <div className={className()} lang={lang()} ref={mainRef}>
           <button
-            className="menu-toggle btn-appearance"
-            tabIndex={menuShown || pickerShown ? 0 : -1}
-            aria-expanded={menuShown}
+            className="picker-toggle btn-appearance"
+            aria-expanded={pickerShown}
             aria-haspopup={true}
-            onClick={toggleMenu}
+            onClick={showPicker}
           >
-            <span className="v-hidden">{locale().toggleLabel}</span>
-            <Arrow />
+            <span className="v-hidden">{`${locale().pickerLabel}. ${locale().formatLabel}: ${format().toUpperCase()}`}</span>
           </button>
-        </MenuDropdown>
-      </div>
+          <input
+            ref={input}
+            type="text"
+            name={id()}
+            id={id()}
+            className="color-preview btn-appearance"
+            autoComplete="off"
+            spellCheck={false}
+            placeholder={placeholder()}
+            value={value}
+            tabIndex={-1}
+            style={{ backgroundColor: value }}
+            onFocus={showPicker}
+            onChange={handleChange}
+          />
+          <PickerDropdown className={pickerClass()} ref={pickerDropdown} />
+
+          <MenuDropdown
+            className={menuClass()}
+            ref={menuDropdown}
+            colorPresets={colorPresets()}
+            colorKeywords={colorKeywords()}
+          >
+            <button
+              className="menu-toggle btn-appearance"
+              tabIndex={menuShown || pickerShown ? 0 : -1}
+              aria-expanded={menuShown}
+              aria-haspopup={true}
+              onClick={toggleMenu}
+            >
+              <span className="v-hidden">{locale().toggleLabel}</span>
+              <Arrow />
+            </button>
+          </MenuDropdown>
+        </div>
+      </Suspense>
     </PickerContext.Provider>
   );
 };

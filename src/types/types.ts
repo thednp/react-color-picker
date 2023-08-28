@@ -6,6 +6,7 @@ export type SupportedLanguage = 'en' | 'ru' | 'ar' | 'fr' | 'de' | 'ro' | 'es' |
 export type SupportedFormat = 'rgb' | 'hex' | 'hwb' | 'hsl';
 
 export type LanguagePack = ColorNames & ColorPickerLabels;
+export type Accessor<T> = () => T;
 
 export interface ColorPickerLabels {
   pickerLabel: string;
@@ -80,13 +81,11 @@ export type ControlProps = {
 };
 
 export type PickerProps = {
-  id: string;
   ref: HTMLDivElement;
   className: string;
 };
 
 export type PresetsProps = {
-  id: string;
   ref: HTMLDivElement;
   className: string;
   colorPresets: ColorPresets;
@@ -94,12 +93,10 @@ export type PresetsProps = {
 };
 
 export type KeyProps = {
-  id: string;
   colorKeywords: ColorKeywords;
 };
 
 export type MenuProps = {
-  id: string;
   ref: HTMLDivElement;
   className: string;
   colorPresets?: ColorPresets;

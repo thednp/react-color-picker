@@ -21,7 +21,7 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
     "allowSyntheticDefaultImports": true,
-    "types": ["vite-plugin-svgr/client", "vite/client", "@thednp/color", "@thednp/color-picker", "@thednp/event-listener", "@thednp/shorty"]
+    "types": ["vite/client", "vite-plugin-svgr/client", "@thednp/color", "@thednp/color-picker", "@thednp/event-listener", "@thednp/shorty"]
   },
   "include": ["./src", "example"],
   "exclude": ["node_modules", "dist", "example/dist", "experiments"]

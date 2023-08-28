@@ -35,7 +35,7 @@ const DefaultColorPicker = (props: ColorPickerProps) => {
   pickerCount += 1;
 
   const updatePosition = () => {
-    if (input.current) {
+    if (typeof input.current !== 'undefined') {
       const elRect = getBoundingClientRect(input.current);
       const { top, bottom } = elRect;
       const { offsetHeight: elHeight } = input.current;
@@ -64,7 +64,7 @@ const DefaultColorPicker = (props: ColorPickerProps) => {
 
   const toggleEvents = (add?: boolean) => {
     const action = add ? addListener : removeListener;
-    if (input.current) {
+    if (typeof input.current !== 'undefined') {
       const win = getWindow(input.current);
       const doc = win.document;
 
@@ -87,7 +87,7 @@ const DefaultColorPicker = (props: ColorPickerProps) => {
     setOpen(null);
   };
   const showMenu = () => {
-    if (menuDropdown.current) {
+    if (typeof menuDropdown.current !== 'undefined') {
       setPickerShown(false);
       setOpen(menuDropdown.current);
       setPosition('bottom');
@@ -99,7 +99,7 @@ const DefaultColorPicker = (props: ColorPickerProps) => {
     }
   };
   const hideMenu = () => {
-    if (menuDropdown.current) {
+    if (typeof menuDropdown.current !== 'undefined') {
       setMenuShown(false);
       reflow(menuDropdown.current);
       emulateTransitionEnd(menuDropdown.current, hideTransitionEnd);
@@ -114,23 +114,19 @@ const DefaultColorPicker = (props: ColorPickerProps) => {
   };
 
   const showPicker = () => {
-    if (pickerDropdown.current) {
-      setMenuShown(false);
-      setOpen(pickerDropdown.current);
-      setPosition('bottom');
-      reflow(pickerDropdown.current);
-      startTransition(() => {
-        updatePosition();
-        setPickerShown(true);
-      });
-    }
+    setMenuShown(false);
+    setOpen(pickerDropdown.current);
+    setPosition('bottom');
+    reflow(pickerDropdown.current);
+    startTransition(() => {
+      updatePosition();
+      setPickerShown(true);
+    });
   };
   const hidePicker = () => {
-    if (pickerDropdown.current) {
-      setPickerShown(false);
-      reflow(pickerDropdown.current);
-      emulateTransitionEnd(pickerDropdown.current, hideTransitionEnd);
-    }
+    setPickerShown(false);
+    reflow(pickerDropdown.current);
+    emulateTransitionEnd(pickerDropdown.current, hideTransitionEnd);
   };
 
   // console.log(props)

@@ -8,8 +8,8 @@ import svg from 'vite-plugin-svgr';
 export default defineConfig({
   plugins: [
     react(),
-    // svg({ defaultImport: 'component' })
-    svg({ exportAsDefault: true }),
+    // svg({ exportAsDefault: true })
+    svg()
   ],
   server: {
     port: 4000,

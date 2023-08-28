@@ -1,9 +1,10 @@
+
 import { ObjectEntries, ObjectKeys, ObjectValues } from '@thednp/shorty';
 import Color from '@thednp/color';
 import { useEffect, useState } from 'react';
-import Fill from './assets/fill.svg';
-import Banner from './assets/banner.svg';
-import Plus from './assets/plus.svg';
+import {ReactComponent as Fill} from './assets/fill.svg';
+import { ReactComponent as Banner} from './assets/banner.svg';
+import { ReactComponent as Plus} from './assets/plus.svg';
 import './style.css';
 
 import Pre from './Pre';
@@ -89,11 +90,11 @@ const App = () => {
       <main className="container">
         <div className="row">
           <div className="col col-lg-6 mx-auto">
-            <label className="v-hidden" htmlFor="my-color-picker">
+            <label className="v-hidden" htmlFor={'my-color-picker'}>
               Default Color Picker
             </label>
             <DefaultColorPicker
-              id="my-color-picker"
+              id={'my-color-picker'}
               format={format}
               theme={theme}
               lang={lang}
@@ -299,25 +300,26 @@ const App = () => {
                     }}
                   >
                     <span className="v-hidden">Add</span>
-                    <Plus fill="currentColor" />
+                    <Plus />
                   </button>
                 </div>
               </div>
               {keywords.length ? (
                 <div className="d-flex justify-content-end mb-3">
                   <div className="btn-toolbar gap-1">
-                    {keywords.map(kwd => {
-                      const [k] = ObjectEntries(kwd)[0] as [string, string];
-                      return (
-                        <button
-                          key={k}
-                          className="btn"
-                          onClick={() => setKeywords(keywords.filter(kw => ObjectKeys(kw)[0] !== k))}
-                        >
-                          {k}
-                        </button>
-                      );
-                    })}
+                    {keywords.map(
+                      kwd => {
+                        const [k] = ObjectEntries(kwd)[0] as [string, string];
+                        return (
+                          <button
+                            key={k}
+                            className="btn"
+                            onClick={() => setKeywords(keywords.filter(kw => ObjectKeys(kw)[0] !== k))}
+                          >
+                            {k}
+                          </button>
+                        );
+                      })}
                   </div>
                 </div>
               ) : null}
