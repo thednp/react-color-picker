@@ -1,7 +1,7 @@
 import Color from '@thednp/color';
 import React from 'react';
 import { createContext, useContext } from 'react';
-import type {LanguagePack, SupportedFormat, Accessor } from '../types/types';
+import type { LanguagePack, SupportedFormat, Accessor } from '../types/types';
 import initialControlPositions from '../util/initialControlPositions';
 
 export const PickerContext = createContext({

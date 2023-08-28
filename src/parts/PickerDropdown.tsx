@@ -414,7 +414,7 @@ const PartSelection = {
 const PickerDropdown = forwardRef((props: PickerProps, ref: ForwardedRef<HTMLDivElement>) => {
   const { format } = usePickerContext();
 
-  return <Suspense>{createElement(PartSelection[format()], {...props, ref})}</Suspense>;
+  return <Suspense>{createElement(PartSelection[format()], { ...props, ref })}</Suspense>;
 });
 
 export default PickerDropdown;

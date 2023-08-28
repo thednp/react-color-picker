@@ -25,7 +25,7 @@ import type { ColorPickerProps } from '../types/types';
 import { PickerContext } from '../parts/ColorPickerContext';
 import initialControlPositions from '../util/initialControlPositions';
 import { languagePacks, getLanguageStrings } from '../locales/getLanguageStrings';
-import { ReactComponent as Arrow} from '../assets/arrow.svg';
+import { ReactComponent as Arrow } from '../assets/arrow.svg';
 
 import PickerDropdown from '../parts/PickerDropdown';
 import MenuDropdown from '../parts/MenuDropdown';
@@ -60,8 +60,8 @@ const DefaultColorPicker = (props: ColorPickerProps) => {
   const colorKeywords = () => props.colorKeywords;
   const placeholder = () =>
     props.placeholder ? props.placeholder : locale().placeholder.replace(/%/g, format().toUpperCase());
-  const offsetHeight = () => window.innerWidth >= 980 ? 300 : 230;
-  const offsetWidth = () => window.innerWidth >= 980 ? 300 : 230;
+  const offsetHeight = () => (window.innerWidth >= 980 ? 300 : 230);
+  const offsetWidth = () => (window.innerWidth >= 980 ? 300 : 230);
 
   const [value, setValue] = useState(initValue());
   const [color, setColor] = useState(new Color(value, format()));
@@ -93,11 +93,19 @@ const DefaultColorPicker = (props: ColorPickerProps) => {
   const input = useRef<HTMLInputElement>(null);
 
   const controls = () => {
-    return [...getElementsByClassName('color-control', pickerDropdown.current as ParentNode)] as [HTMLElement, HTMLElement, HTMLElement];
+    return [...getElementsByClassName('color-control', pickerDropdown.current as ParentNode)] as [
+      HTMLElement,
+      HTMLElement,
+      HTMLElement,
+    ];
   };
 
   const visuals = () => {
-    return [...getElementsByClassName('visual-control', pickerDropdown.current as ParentNode)] as [HTMLElement, HTMLElement, HTMLElement];
+    return [...getElementsByClassName('visual-control', pickerDropdown.current as ParentNode)] as [
+      HTMLElement,
+      HTMLElement,
+      HTMLElement,
+    ];
   };
 
   const knobs = () => {
@@ -108,7 +116,11 @@ const DefaultColorPicker = (props: ColorPickerProps) => {
   };
 
   const inputs = () => {
-    return [...getElementsByClassName('color-input', pickerDropdown.current as ParentNode)] as [HTMLElement, HTMLElement, HTMLElement];
+    return [...getElementsByClassName('color-input', pickerDropdown.current as ParentNode)] as [
+      HTMLElement,
+      HTMLElement,
+      HTMLElement,
+    ];
   };
   const hue = () => controlPositions.c2y / offsetHeight();
   const lightness = () => roundPart(color.toHsv().v * 100);
@@ -231,7 +243,9 @@ const DefaultColorPicker = (props: ColorPickerProps) => {
     const { target, code } = e;
     const { previousElementSibling, nextElementSibling, parentElement } = target;
     const isColorOptionsMenu =
-      typeof menuDropdown !== 'undefined' && parentElement && (menuDropdown.current as HTMLDivElement).contains(parentElement);
+      typeof menuDropdown !== 'undefined' &&
+      parentElement &&
+      (menuDropdown.current as HTMLDivElement).contains(parentElement);
     const allSiblings = parentElement ? [...parentElement.children] : [];
     const columnsCount =
       isColorOptionsMenu && getElementStyle(parentElement, 'grid-template-columns').split(' ').length;
@@ -311,7 +325,11 @@ const DefaultColorPicker = (props: ColorPickerProps) => {
     const doc = getDocument(v1);
     const selection = doc.getSelection();
 
-    if (!drag && (!selection || !selection.toString().length) && (!mainRef.current || !mainRef.current.contains(e.target as Node))) {
+    if (
+      !drag &&
+      (!selection || !selection.toString().length) &&
+      (!mainRef.current || !mainRef.current.contains(e.target as Node))
+    ) {
       hideDropdown();
     }
 
@@ -323,7 +341,7 @@ const DefaultColorPicker = (props: ColorPickerProps) => {
 
     if (!drag) return;
 
-    const controlRect = getBoundingClientRect(drag );
+    const controlRect = getBoundingClientRect(drag);
     const win = getDocumentElement(v1);
     const offsetX = pageX - win.scrollLeft - controlRect.left;
     const offsetY = pageY - win.scrollTop - controlRect.top;
@@ -489,9 +507,11 @@ const DefaultColorPicker = (props: ColorPickerProps) => {
     action(doc, 'pointermove', pointerMove as EventListener);
     [c1, c2, c3].forEach(c => action(c, 'pointerdown', pointerDown as EventListener));
     [k1, k2, k3].forEach(k => action(k, 'keydown', handleKnobs as EventListener));
-    if (typeof mainRef.current !== 'undefined') action(mainRef.current as HTMLElement, 'focusout', handleBlur as EventListener);
+    if (typeof mainRef.current !== 'undefined')
+      action(mainRef.current as HTMLElement, 'focusout', handleBlur as EventListener);
     // when no presets/keywords, the menu won't be rendered
-    if (typeof menuDropdown.current !== 'undefined') action((menuDropdown.current as HTMLElement), 'keydown', menuKeyHandler as EventListener);
+    if (typeof menuDropdown.current !== 'undefined')
+      action(menuDropdown.current as HTMLElement, 'keydown', menuKeyHandler as EventListener);
   };
 
   const hideTransitionEnd = () => {
@@ -538,7 +558,7 @@ const DefaultColorPicker = (props: ColorPickerProps) => {
   const hidePicker = () => {
     setPickerShown(false);
     reflow(pickerDropdown.current as HTMLDivElement);
-    emulateTransitionEnd((pickerDropdown.current as HTMLDivElement), hideTransitionEnd);
+    emulateTransitionEnd(pickerDropdown.current as HTMLDivElement, hideTransitionEnd);
   };
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const newValue = e.currentTarget.value;
@@ -552,7 +572,7 @@ const DefaultColorPicker = (props: ColorPickerProps) => {
     startTransition(() => {
       setColor(newColor);
       setValue(newColor.toString());
-    })
+    });
   };
 
   useEffect(() => {
@@ -610,7 +630,9 @@ const DefaultColorPicker = (props: ColorPickerProps) => {
             aria-haspopup={true}
             onClick={showPicker}
           >
-            <span className="v-hidden">{`${locale().pickerLabel}. ${locale().formatLabel}: ${format().toUpperCase()}`}</span>
+            <span className="v-hidden">{`${locale().pickerLabel}. ${
+              locale().formatLabel
+            }: ${format().toUpperCase()}`}</span>
           </button>
           <input
             ref={input}

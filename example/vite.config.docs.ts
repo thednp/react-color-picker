@@ -7,7 +7,7 @@ export default defineConfig({
   plugins: [
     react(),
     // svg({ exportAsDefault: true })
-    svg()
+    svg(),
   ],
   server: {
     port: 3000,
