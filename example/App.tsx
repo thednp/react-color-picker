@@ -1,10 +1,9 @@
-
 import { ObjectEntries, ObjectKeys, ObjectValues } from '@thednp/shorty';
 import Color from '@thednp/color';
 import { useEffect, useState } from 'react';
-import {ReactComponent as Fill} from './assets/fill.svg';
-import { ReactComponent as Banner} from './assets/banner.svg';
-import { ReactComponent as Plus} from './assets/plus.svg';
+import { ReactComponent as Fill } from './assets/fill.svg';
+import { ReactComponent as Banner } from './assets/banner.svg';
+import { ReactComponent as Plus } from './assets/plus.svg';
 import './style.css';
 
 import Pre from './Pre';
@@ -307,19 +306,18 @@ const App = () => {
               {keywords.length ? (
                 <div className="d-flex justify-content-end mb-3">
                   <div className="btn-toolbar gap-1">
-                    {keywords.map(
-                      kwd => {
-                        const [k] = ObjectEntries(kwd)[0] as [string, string];
-                        return (
-                          <button
-                            key={k}
-                            className="btn"
-                            onClick={() => setKeywords(keywords.filter(kw => ObjectKeys(kw)[0] !== k))}
-                          >
-                            {k}
-                          </button>
-                        );
-                      })}
+                    {keywords.map(kwd => {
+                      const [k] = ObjectEntries(kwd)[0] as [string, string];
+                      return (
+                        <button
+                          key={k}
+                          className="btn"
+                          onClick={() => setKeywords(keywords.filter(kw => ObjectKeys(kw)[0] !== k))}
+                        >
+                          {k}
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
               ) : null}

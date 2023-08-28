@@ -1,7 +1,7 @@
 import { Suspense } from 'react';
 import { ColorKeywords } from '../src/types/types';
-import { ReactComponent as Files} from './assets/files.svg';
-import { ReactComponent as Gear} from './assets/gear.svg';
+import { ReactComponent as Files } from './assets/files.svg';
+import { ReactComponent as Gear } from './assets/gear.svg';
 import { toggleCollapse } from './util/toggleCollapse';
 import copyToClipboard from './util/copyToClipboard';
 
