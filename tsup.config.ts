@@ -1,11 +1,11 @@
-import type { Options } from 'tsup';
+import { defineConfig } from 'tsup';
 
-export const tsup: Options = {
-  sourcemap: true,
-  clean: true,
-  dts: true,
-  format: ['esm'],
-  entryPoints: ['src/index.tsx'],
-  outDir: 'dist',
-  target: 'esnext',
-};
+export default defineConfig({
+    sourcemap: true,
+    clean: true,
+    dts: true,
+    format: ['esm'],
+    entryPoints: ['src/index.tsx'],
+    outDir: 'dist',
+    target: 'esnext',
+});

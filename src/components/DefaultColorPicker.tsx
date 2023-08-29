@@ -25,12 +25,10 @@ import type { ColorPickerProps } from '../types/types';
 import { PickerContext } from '../parts/ColorPickerContext';
 import initialControlPositions from '../util/initialControlPositions';
 import { languagePacks, getLanguageStrings } from '../locales/getLanguageStrings';
-import { ReactComponent as Arrow } from '../assets/arrow.svg';
+import Arrow from '../assets/Arrow';
 
 import PickerDropdown from '../parts/PickerDropdown';
 import MenuDropdown from '../parts/MenuDropdown';
-// const PickerDropdown = lazy(() => import('../parts/PickerDropdown'));
-// const MenuDropdown = lazy(() => import('../parts/MenuDropdown'));
 
 // import default color picker style
 import './color-picker.css';
@@ -561,7 +559,7 @@ const DefaultColorPicker = (props: ColorPickerProps) => {
     emulateTransitionEnd(pickerDropdown.current as HTMLDivElement, hideTransitionEnd);
   };
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const newValue = e.currentTarget.value;
+    const newValue = e.target.value;
     const newColor = new Color(newValue, format());
     if (newValue && newValue.length && newColor.isValid) {
       update(newColor);
@@ -647,7 +645,8 @@ const DefaultColorPicker = (props: ColorPickerProps) => {
             tabIndex={-1}
             style={{ backgroundColor: value }}
             onFocus={showPicker}
-            onChange={handleChange}
+            onInput={handleChange}
+            onChange={e => setValue(e.target.value)}
           />
           <PickerDropdown className={pickerClass()} ref={pickerDropdown} />
 

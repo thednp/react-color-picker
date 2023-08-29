@@ -1,7 +1,7 @@
-[<img width="100%" src="experiments/banner.svg" alt="react-color-picker">](https://react-color-picker.netlify.app/)
+[<img width="100%" src="experiments/banner.svg" alt="react-color-picker">](https://thednp/github.io/react-color-picker/)
 
 # React Color Picker
-<!-- [![ci](https://github.com/thednp/react-color-picker/actions/workflows/ci.yml/badge.svg)](https://github.com/thednp/react-color-picker/actions/workflows/ci.yml) -->
+[![ci](https://github.com/thednp/react-color-picker/actions/workflows/ci.yml/badge.svg)](https://github.com/thednp/react-color-picker/actions/workflows/ci.yml)
 [![Npm Version](https://img.shields.io/npm/v/@thednp/react-color-picker)](https://www.npmjs.com/package/@thednp/react-color-picker)
 [![typescript version](https://img.shields.io/badge/typescript-5.1.3-brightgreen)](https://www.typescriptlang.org/)
 [![eslint version](https://img.shields.io/badge/eslint-8.45.0-brightgreen)](https://github.com/eslint)
@@ -12,13 +12,13 @@
 The feature rich **ColorPicker** component for React, sourced with TypeScript, WAI-ARIA compliant and is mainly based on [ColorPicker](http://github.com/thednp/color-picker).
 
 ## Demo
-[Live Demo](https://react-color-picker.netlify.app/)
+[Live Demo](https://thednp/github.io/react-color-picker/)
 
 
 ## Highlights
 
 - Accessibility Focus for WAI-ARIA compliance
-- Built in translations for German, French, Russian, Spanish, Portuguese, Romanian, Chinese, Korean and Japanese
+- Built in translations for German, French, Russian, Arabic, Spanish, Portuguese, Romanian, Polish, Chinese, Korean and Japanese for accessibility
 - TypeScript sourced code base
 - Supporting HEX(a), RGB(a), HSL(a) and HWB(a), the last three also in CSS4 Color Module flavours
 - Supports keyboard and touch events as well as responsive design
@@ -46,7 +46,7 @@ function App() {
   return <DefaultColorPicker value="turquoise" onChange={color => console.log(color)} />;
 }
 ```
-For additional component configuration options, please check the [demo](https://react-color-picker.netlify.app/).
+For additional component configuration options, please check the [demo](https://thednp/github.io/react-color-picker/).
 
 
 ## License

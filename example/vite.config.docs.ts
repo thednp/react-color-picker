@@ -6,7 +6,6 @@ export default defineConfig({
   base: './',
   plugins: [
     react(),
-    // svg({ exportAsDefault: true })
     svg(),
   ],
   server: {

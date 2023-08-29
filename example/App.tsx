@@ -15,7 +15,6 @@ import getLocale from './util/locales';
 const App = () => {
   const [format, setFormat] = useState<SupportedFormat>('rgb');
   const [lang, setLang] = useState<SupportedLanguage>('en');
-  // const [direction, setDirection] = useState<'rtl' | 'ltr' | null>(null);
   const [instanceColor, setInstanceColor] = useState('red');
   const [theme, setTheme] = useState<'dark' | 'light'>('dark');
   const favicon = () => document.getElementById('favicon');
@@ -26,7 +25,7 @@ const App = () => {
   const [saturation, setSaturation] = useState(100);
   const presets = () => ({ hue, hueSteps, lightSteps, saturation });
   const [keywords, setKeywords] = useState<{ [x: string]: string }[]>([
-    { default: 'rgb(37, 84, 189)' },
+    { default: 'rgb(8, 126, 164)' },
     { complementary: 'rgb(189, 142, 37)' },
   ]);
   const [colorLabel, setColorLabel] = useState('');
@@ -39,13 +38,11 @@ const App = () => {
   };
   useEffect(() => {
     if (lang === 'ar') {
-      // setDirection('rtl');
       document.documentElement.setAttribute('dir', 'rtl');
     } else {
-      // setDirection(null);
       document.documentElement.removeAttribute('dir');
     }
-  });
+  }, [lang]);
   const onChange = (color: string) => {
     const newColor = new Color(color);
     const newColor90 = new Color(color).spin(90);
@@ -97,7 +94,7 @@ const App = () => {
               format={format}
               theme={theme}
               lang={lang}
-              value={'rgb(37, 84, 189)'}
+              value={'rgb(8, 126, 164)'}
               onChange={onChange}
               colorKeywords={keywords.length ? keywords : undefined}
               colorPresets={palette ? presets() : undefined}
@@ -275,7 +272,7 @@ const App = () => {
                     onChange={e => setColorValue(e.target.value)}
                   />
                   <button
-                    className="btn"
+                    className="btn-option m-0 p-0"
                     onClick={() => {
                       const newColor = new Color(colorValue || colorLabel);
                       if (!colorValue && !colorLabel) {
@@ -299,7 +296,7 @@ const App = () => {
                     }}
                   >
                     <span className="v-hidden">Add</span>
-                    <Plus />
+                    <Plus style={{ verticalAlign: 'middle' }} />
                   </button>
                 </div>
               </div>
