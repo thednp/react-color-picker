@@ -36,7 +36,6 @@ import './color-picker.css';
 const { roundPart } = Color;
 
 const DefaultColorPicker = (props: ColorPickerProps) => {
-  // const { value, setValue, color, setColor } = usePickerContext();
   const id = () => props.id || `color:picker${useId()}`;
   const lang = () => props.lang || 'en';
   const theme = () => props.theme || 'dark';
@@ -505,10 +504,10 @@ const DefaultColorPicker = (props: ColorPickerProps) => {
     action(doc, 'pointermove', pointerMove as EventListener);
     [c1, c2, c3].forEach(c => action(c, 'pointerdown', pointerDown as EventListener));
     [k1, k2, k3].forEach(k => action(k, 'keydown', handleKnobs as EventListener));
-    if (typeof mainRef.current !== 'undefined')
+    if (mainRef && typeof mainRef.current !== 'undefined')
       action(mainRef.current as HTMLElement, 'focusout', handleBlur as EventListener);
     // when no presets/keywords, the menu won't be rendered
-    if (typeof menuDropdown.current !== 'undefined')
+    if (menuDropdown && typeof menuDropdown.current !== 'undefined')
       action(menuDropdown.current as HTMLElement, 'keydown', menuKeyHandler as EventListener);
   };
 
@@ -581,7 +580,7 @@ const DefaultColorPicker = (props: ColorPickerProps) => {
     }
 
     return toggleEvents;
-  });
+  }, [pickerShown, menuShown]);
 
   useMemo(() => {
     if (typeof props.onChange === 'function') {
