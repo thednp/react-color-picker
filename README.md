@@ -3,11 +3,11 @@
 # React Color Picker
 [![ci](https://github.com/thednp/react-color-picker/actions/workflows/ci.yml/badge.svg)](https://github.com/thednp/react-color-picker/actions/workflows/ci.yml)
 [![Npm Version](https://img.shields.io/npm/v/@thednp/react-color-picker)](https://www.npmjs.com/package/@thednp/react-color-picker)
-[![typescript version](https://img.shields.io/badge/typescript-5.1.3-brightgreen)](https://www.typescriptlang.org/)
-[![eslint version](https://img.shields.io/badge/eslint-8.45.0-brightgreen)](https://github.com/eslint)
+[![typescript version](https://img.shields.io/badge/typescript-5.2.2-brightgreen)](https://www.typescriptlang.org/)
+[![eslint version](https://img.shields.io/badge/eslint-8.48.0-brightgreen)](https://github.com/eslint)
 [![prettier version](https://img.shields.io/badge/prettier-2.8.8-brightgreen)](https://prettier.io/)
 [![react version](https://img.shields.io/badge/react-18.2.0-brightgreen)](https://react.dev/)
-[![vite version](https://img.shields.io/badge/vite-4.4.5-brightgreen)](https://github.com/vitejs)
+[![vite version](https://img.shields.io/badge/vite-4.4.9-brightgreen)](https://github.com/vitejs)
 
 The feature rich **ColorPicker** component for React, sourced with TypeScript, WAI-ARIA compliant and is mainly based on [ColorPicker](http://github.com/thednp/color-picker).
 
