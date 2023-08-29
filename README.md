@@ -1,4 +1,4 @@
-[<img width="100%" src="experiments/banner.svg" alt="react-color-picker">](https://thednp/github.io/react-color-picker/)
+[<img width="100%" src="banner.svg" alt="react-color-picker">](https://thednp/github.io/react-color-picker/)
 
 # React Color Picker
 [![ci](https://github.com/thednp/react-color-picker/actions/workflows/ci.yml/badge.svg)](https://github.com/thednp/react-color-picker/actions/workflows/ci.yml)
