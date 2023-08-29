@@ -1,4 +1,4 @@
-[<img width="100%" src="banner.svg" alt="react-color-picker">](https://thednp/github.io/react-color-picker/)
+[<img width="100%" src="banner.svg" alt="react-color-picker">](https://thednp.github.io/react-color-picker/)
 
 # React Color Picker
 [![ci](https://github.com/thednp/react-color-picker/actions/workflows/ci.yml/badge.svg)](https://github.com/thednp/react-color-picker/actions/workflows/ci.yml)
@@ -9,10 +9,10 @@
 [![react version](https://img.shields.io/badge/react-18.2.0-brightgreen)](https://react.dev/)
 [![vite version](https://img.shields.io/badge/vite-4.4.9-brightgreen)](https://github.com/vitejs)
 
-The feature rich **ColorPicker** component for React, sourced with TypeScript, WAI-ARIA compliant and is mainly based on [ColorPicker](http://github.com/thednp/color-picker).
+The feature rich **ColorPicker** component for React, sourced with TypeScript, WAI-ARIA compliant and is mainly based on [ColorPicker](https://github.com/thednp/color-picker).
 
 ## Demo
-[Live Demo](https://thednp/github.io/react-color-picker/)
+[Live Demo](https://thednp.github.io/react-color-picker/)
 
 
 ## Highlights
@@ -46,7 +46,7 @@ function App() {
   return <DefaultColorPicker value="turquoise" onChange={color => console.log(color)} />;
 }
 ```
-For additional component configuration options, please check the [demo](https://thednp/github.io/react-color-picker/).
+For additional component configuration options, please check the [demo](https://thednp.github.io/react-color-picker/).
 
 
 ## License
