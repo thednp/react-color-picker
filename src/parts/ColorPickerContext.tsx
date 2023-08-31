@@ -13,9 +13,6 @@ export const PickerContext = createContext({
   setDrag: (() => {}) as React.Dispatch<React.SetStateAction<HTMLElement | null>>,
   value: '',
   setValue: (() => {}) as React.Dispatch<React.SetStateAction<string>>,
-  visuals: (() => []) as Accessor<HTMLElement[]>,
-  knobs: (() => []) as Accessor<HTMLElement[]>,
-  inputs: (() => []) as Accessor<HTMLElement[]>,
   appearance: (() => '') as Accessor<string>,
   controlPositions: initialControlPositions,
   setControlPositions: (() => []) as React.Dispatch<React.SetStateAction<typeof initialControlPositions>>,
@@ -27,6 +24,8 @@ export const PickerContext = createContext({
   alpha: (() => 0) as Accessor<number>,
   fill: (() => {}) as Accessor<Color>,
   fillGradient: (() => '') as Accessor<string>,
+  offsetWidth: (() => 0) as Accessor<number>,
+  offsetHeight: (() => 0) as Accessor<number>,
 });
 
 export const usePickerContext = () => useContext(PickerContext);

@@ -2,7 +2,6 @@ import Color from '@thednp/color';
 import { addListener, removeListener } from '@thednp/event-listener';
 import {
   getWindow,
-  getElementsByClassName,
   getDocumentElement,
   getBoundingClientRect,
   reflow,
@@ -36,6 +35,7 @@ import './color-picker.css';
 const { roundPart } = Color;
 
 const DefaultColorPicker = (props: ColorPickerProps) => {
+  // const { value, setValue, color, setColor } = usePickerContext();
   const id = () => props.id || `color:picker${useId()}`;
   const lang = () => props.lang || 'en';
   const theme = () => props.theme || 'dark';
@@ -60,14 +60,14 @@ const DefaultColorPicker = (props: ColorPickerProps) => {
   const offsetHeight = () => (window.innerWidth >= 980 ? 300 : 230);
   const offsetWidth = () => (window.innerWidth >= 980 ? 300 : 230);
 
-  const [value, setValue] = useState(initValue());
-  const [color, setColor] = useState(new Color(value, format()));
-  const [open, setOpen] = useState(null as HTMLDivElement | null);
+  const [value, setValue] = useState<string>(initValue());
+  const [color, setColor] = useState<Color>(new Color(value, format()));
+  const [open, setOpen] = useState<HTMLDivElement | null>(null);
   const [drag, setDrag] = useState<HTMLElement | null>(null);
-  const [pickerShown, setPickerShown] = useState(false);
-  const [menuShown, setMenuShown] = useState(false);
-  const [position, setPosition] = useState('');
-  const [controlPositions, setControlPositions] = useState(initialControlPositions);
+  const [pickerShown, setPickerShown] = useState<boolean>(false);
+  const [menuShown, setMenuShown] = useState<boolean>(false);
+  const [position, setPosition] = useState<string>('');
+  const [controlPositions, setControlPositions] = useState<typeof initialControlPositions>(initialControlPositions);
   // allow this to be readily available on typing on inputs
   const isDark = () => {
     const temp = new Color(value);
@@ -89,36 +89,6 @@ const DefaultColorPicker = (props: ColorPickerProps) => {
   const menuDropdown = useRef<HTMLDivElement>(null);
   const input = useRef<HTMLInputElement>(null);
 
-  const controls = () => {
-    return [...getElementsByClassName('color-control', pickerDropdown.current as ParentNode)] as [
-      HTMLElement,
-      HTMLElement,
-      HTMLElement,
-    ];
-  };
-
-  const visuals = () => {
-    return [...getElementsByClassName('visual-control', pickerDropdown.current as ParentNode)] as [
-      HTMLElement,
-      HTMLElement,
-      HTMLElement,
-    ];
-  };
-
-  const knobs = () => {
-    return [
-      ...getElementsByClassName('color-pointer', pickerDropdown.current as ParentNode),
-      ...getElementsByClassName('color-slider', pickerDropdown.current as ParentNode),
-    ] as [HTMLElement, HTMLElement, HTMLElement];
-  };
-
-  const inputs = () => {
-    return [...getElementsByClassName('color-input', pickerDropdown.current as ParentNode)] as [
-      HTMLElement,
-      HTMLElement,
-      HTMLElement,
-    ];
-  };
   const hue = () => controlPositions.c2y / offsetHeight();
   const lightness = () => roundPart(color.toHsv().v * 100);
   const saturation = () => roundPart(color.toHsv().s * 100);
@@ -274,52 +244,11 @@ const DefaultColorPicker = (props: ColorPickerProps) => {
       target.click();
     }
   };
-  const handleScroll = (e: Event) => {
-    const { activeElement } = getDocument(e.target as HTMLElement);
-
-    updateDropdownPosition();
-
-    /* istanbul ignore next */
-    if (
-      (['pointermove', 'touchmove'].includes(e.type) && drag) ||
-      (activeElement && [...knobs()].includes(activeElement as HTMLElement))
-    ) {
-      e.stopPropagation();
-      e.preventDefault();
-    }
-  };
   const handleDismiss = (e: KeyboardEvent) => {
     if (open && e.code === 'Escape') hideDropdown();
   };
-  const pointerDown = (e: PointerEvent) => {
-    if (e.button !== 0) return;
-    const { currentTarget, target, pageX, pageY } = e;
-    const controlWrappers = [...controls()];
-    const idx = controlWrappers.indexOf(currentTarget as HTMLElement);
-    const [v1, v2, v3] = visuals();
-    const [k1, k2, k3] = knobs();
-    const visual = visuals()[idx];
-    const { left, top } = getBoundingClientRect(visual as HTMLDivElement);
-    const html = getDocumentElement(v1);
-    const offsetX = pageX - html.scrollLeft - left;
-    const offsetY = pageY - html.scrollTop - top;
-
-    /* istanbul ignore else */
-    if (visual === v1 || target === k1) {
-      setDrag(visual);
-      changeControl1(offsetX, offsetY);
-    } else if (visual === v2 || target === k2) {
-      setDrag(visual);
-      changeControl2(offsetY);
-    } else if (visual === v3 || target === k3) {
-      setDrag(visual);
-      changeAlpha(offsetY);
-    }
-    e.preventDefault();
-  };
   const pointerUp = (e: PointerEvent) => {
-    const [v1] = visuals();
-    const doc = getDocument(v1);
+    const doc = getDocument(e.target as Node);
     const selection = doc.getSelection();
 
     if (
@@ -332,182 +261,19 @@ const DefaultColorPicker = (props: ColorPickerProps) => {
 
     setDrag(null);
   };
-  const pointerMove = (e: PointerEvent): void => {
-    const [v1, v2, v3] = visuals();
-    const { pageX, pageY } = e;
 
-    if (!drag) return;
-
-    const controlRect = getBoundingClientRect(drag);
-    const win = getDocumentElement(v1);
-    const offsetX = pageX - win.scrollLeft - controlRect.left;
-    const offsetY = pageY - win.scrollTop - controlRect.top;
-
-    if (drag === v1) {
-      changeControl1(offsetX, offsetY);
-    }
-
-    if (drag === v2) {
-      changeControl2(offsetY);
-    }
-
-    if (drag === v3) {
-      changeAlpha(offsetY);
-    }
-  };
-  const handleKnobs = (e: Event & { code: string }) => {
-    const { target, code } = e;
-
-    // only react to arrow buttons
-    if (![keyArrowUp, keyArrowDown, keyArrowLeft, keyArrowRight].includes(code)) return;
-    e.preventDefault();
-
-    const [k1, k2, k3] = knobs();
-    /**
-     * @see https://stackoverflow.com/questions/70373659/solidjs-computations-created-outside-a-createroot-or-render-will-never-be
-     */
-    const [{ offsetWidth, offsetHeight }] = visuals();
-    const { activeElement } = getDocument(k1);
-    const currentKnob = [k1, k2, k3].find(x => x === activeElement);
-    const yRatio = offsetHeight / 360;
-
-    /* istanbul ignore else */
-    if (currentKnob) {
-      /* istanbul ignore else */
-      if (target === k1) {
-        const xRatio = offsetWidth / 100;
-
-        /* istanbul ignore else */
-        if ([keyArrowLeft, keyArrowRight].includes(code)) {
-          setControlPositions({
-            ...controlPositions,
-            c1x: controlPositions.c1x + (code === keyArrowRight ? xRatio : -xRatio),
-          });
-        } else if ([keyArrowUp, keyArrowDown].includes(code)) {
-          setControlPositions({
-            ...controlPositions,
-            c1y: controlPositions.c1y + (code === keyArrowDown ? yRatio : -yRatio),
-          });
-        }
-
-        changeControl1(controlPositions.c1x, controlPositions.c1y);
-      } else if (target === k2) {
-        setControlPositions({
-          ...controlPositions,
-          c2y: controlPositions.c2y + ([keyArrowDown, keyArrowRight].includes(code) ? yRatio : -yRatio),
-        });
-        changeControl2(controlPositions.c2y);
-      } else if (target === k3) {
-        setControlPositions({
-          ...controlPositions,
-          c3y: controlPositions.c3y + ([keyArrowDown, keyArrowRight].includes(code) ? yRatio : -yRatio),
-        });
-        changeAlpha(controlPositions.c3y);
-      }
-      handleScroll(e);
-    }
-  };
-
-  const changeControl1 = (X: number, Y: number) => {
-    let [offsetX, offsetY] = [0, 0];
-
-    if (X > offsetWidth()) offsetX = offsetWidth();
-    else if (X >= 0) offsetX = X;
-
-    if (Y > offsetHeight()) offsetY = offsetHeight();
-    else if (Y >= 0) offsetY = Y;
-
-    const hue = controlPositions.c2y / offsetHeight();
-    const saturation = offsetX / offsetWidth();
-    const lightness = 1 - offsetY / offsetHeight();
-    const alpha = 1 - controlPositions.c3y / offsetHeight();
-
-    // new color
-    const newColor = new Color(
-      {
-        h: hue,
-        s: saturation,
-        v: lightness,
-        a: alpha,
-      },
-      format(),
-    );
-
-    setValue(newColor.toString());
-    setColor(newColor);
-    setControlPositions({
-      ...controlPositions,
-      c1x: offsetX,
-      c1y: offsetY,
-    });
-  };
-
-  const changeControl2 = (Y: number) => {
-    let offsetY = 0;
-
-    if (Y > offsetHeight()) offsetY = offsetHeight();
-    else if (Y >= 0) offsetY = Y;
-
-    const hue = offsetY / offsetHeight();
-    const saturation = controlPositions.c1x / offsetWidth();
-    const lightness = 1 - controlPositions.c1y / offsetHeight();
-    const alpha = 1 - controlPositions.c3y / offsetHeight();
-
-    // new color
-    const newColor = new Color(
-      {
-        h: hue,
-        s: saturation,
-        v: lightness,
-        a: alpha,
-      },
-      format(),
-    );
-
-    setValue(newColor.toString());
-    setColor(newColor);
-    setControlPositions({
-      ...controlPositions,
-      c2y: offsetY,
-    });
-  };
-
-  const changeAlpha = (Y: number) => {
-    let offsetY = 0;
-
-    if (Y > offsetHeight()) offsetY = offsetHeight();
-    else if (Y >= 0) offsetY = Y;
-
-    // update color alpha
-    const alpha = 1 - offsetY / offsetHeight();
-    const newColor = new Color(color.setAlpha(alpha), format());
-
-    setValue(newColor.toString());
-    setColor(newColor);
-    setControlPositions({
-      ...controlPositions,
-      c3y: offsetY,
-    });
-  };
-
-  const toggleEvents = (add?: boolean) => {
+  const toggleGlobalEvents = (add?: boolean) => {
     const action = add ? addListener : removeListener;
     const win = getWindow(input.current as HTMLElement);
     const doc = win.document;
-    const [c1, c2, c3] = controls();
-    const [k1, k2, k3] = knobs();
-    // const parent = c1.closest('.color-picker');
-    action(win, 'scroll', handleScroll);
+    action(win, 'scroll', updateControlPositions);
     action(win, 'resize', handleResize);
     action(doc, 'keyup', handleDismiss as EventListener);
     action(doc, 'pointerup', pointerUp as EventListener);
-    action(doc, 'pointermove', pointerMove as EventListener);
-    [c1, c2, c3].forEach(c => action(c, 'pointerdown', pointerDown as EventListener));
-    [k1, k2, k3].forEach(k => action(k, 'keydown', handleKnobs as EventListener));
-    if (typeof mainRef === 'object' && typeof mainRef.current !== 'undefined')
+    if (typeof mainRef.current !== 'undefined')
       action(mainRef.current as HTMLElement, 'focusout', handleBlur as EventListener);
     // when no presets/keywords, the menu won't be rendered
-    if (typeof menuDropdown === 'object' && typeof menuDropdown.current !== 'undefined')
+    if (typeof menuDropdown.current !== 'undefined')
       action(menuDropdown.current as HTMLElement, 'keydown', menuKeyHandler as EventListener);
   };
 
@@ -567,20 +333,23 @@ const DefaultColorPicker = (props: ColorPickerProps) => {
   const handleResize = () => startTransition(updateControlPositions);
   const update = (newColor: Color) => {
     startTransition(() => {
-      setColor(newColor);
+      const { r, g, b, a } = newColor;
+      setColor(prev => ObjectAssign(prev, { r, g, b, a }));
+      // setColor(newColor);
       setValue(newColor.toString());
+      updateControlPositions();
     });
   };
 
   useEffect(() => {
     if (pickerShown || menuShown) {
-      toggleEvents(true);
+      toggleGlobalEvents(true);
     } else {
-      toggleEvents();
+      toggleGlobalEvents();
     }
 
-    return toggleEvents;
-  }, [pickerShown, menuShown]);
+    return toggleGlobalEvents;
+  });
 
   useMemo(() => {
     if (typeof props.onChange === 'function') {
@@ -603,12 +372,11 @@ const DefaultColorPicker = (props: ColorPickerProps) => {
         setColor,
         drag,
         setDrag,
-        visuals,
-        knobs,
-        inputs,
         controlPositions,
         setControlPositions,
         updateControlPositions,
+        offsetWidth,
+        offsetHeight,
         appearance,
         update,
         hue,
@@ -644,8 +412,9 @@ const DefaultColorPicker = (props: ColorPickerProps) => {
             tabIndex={-1}
             style={{ backgroundColor: value }}
             onFocus={showPicker}
-            onInput={handleChange}
-            onChange={e => setValue(e.target.value)}
+            onChange={handleChange}
+            // onSubmit={(e) => console.log(e)}
+            // onInput={(e: ChangeEvent<HTMLInputElement>) => setValue(e.target.value)}
           />
           <PickerDropdown className={pickerClass()} ref={pickerDropdown} />
 
