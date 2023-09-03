@@ -1,25 +1,17 @@
 import Color from '@thednp/color';
 import { addListener, removeListener } from '@thednp/event-listener';
 import {
-  getWindow,
-  getDocumentElement,
   getBoundingClientRect,
   reflow,
+  focus,
   emulateTransitionEnd,
   getDocument,
-  keyArrowUp,
-  keyArrowDown,
-  keyArrowLeft,
-  keyArrowRight,
-  keySpace,
-  keyEnter,
-  getElementStyle,
-  focus,
   ObjectAssign,
   ObjectKeys,
+  keyEnter,
 } from '@thednp/shorty';
 
-import { useState, useEffect, startTransition, useMemo, useRef, ChangeEvent, useId, Suspense } from 'react';
+import { useState, useEffect, startTransition, useRef, ChangeEvent, FocusEvent, KeyboardEvent, useId } from 'react';
 import type { ColorPickerProps } from '../types/types';
 import { PickerContext } from '../parts/ColorPickerContext';
 import initialControlPositions from '../util/initialControlPositions';
@@ -28,24 +20,35 @@ import Arrow from '../assets/Arrow';
 
 import PickerDropdown from '../parts/PickerDropdown';
 import MenuDropdown from '../parts/MenuDropdown';
+import defaultValues from '../util/defaultValues';
 
 // import default color picker style
 import './color-picker.css';
 
-const { roundPart } = Color;
-
 const DefaultColorPicker = (props: ColorPickerProps) => {
-  // const { value, setValue, color, setColor } = usePickerContext();
-  const id = () => props.id || `color:picker${useId()}`;
-  const lang = () => props.lang || 'en';
-  const theme = () => props.theme || 'dark';
-  const format = () => props.format || 'rgb';
-  const initValue = () => props.value || 'red';
+  const id = () => props.id || `color-picker-${useId().replace(/\:/g, '')}`;
+  const [lang, setLang] = useState(defaultValues.lang);
+  const [theme, setTheme] = useState(defaultValues.theme);
+  const [format, setFormat] = useState(defaultValues.format);
+  const [colorPresets, setColorPresets] = useState(defaultValues.colorPresets);
+  const [colorKeywords, setColorKeywords] = useState(defaultValues.colorKeywords);
+  const [placeholder, setPlaceholder] = useState(
+    getLanguageStrings(lang).placeholder.replace(/%/g, format.toUpperCase()),
+  );
+  const [inputValue, setInputValue] = useState<string>(defaultValues.value);
+  const [value, setValue] = useState<string>(inputValue);
+  const [color, setColor] = useState<Color>(new Color(inputValue, format));
+  const [open, setOpen] = useState<HTMLDivElement | null>(null);
+  const [drag, setDrag] = useState<HTMLElement | null>(null);
+  const [pickerShown, setPickerShown] = useState<boolean>(false);
+  const [menuShown, setMenuShown] = useState<boolean>(false);
+  const [position, setPosition] = useState<string>('');
+  const [controlPositions, setControlPositions] = useState<typeof initialControlPositions>(initialControlPositions);
   const locale = () => {
-    if (props.lang && 'en' !== props.lang && ObjectKeys(languagePacks).includes(props.lang)) {
+    if ('en' !== lang && ObjectKeys(languagePacks).includes(lang)) {
       return getLanguageStrings(props.lang);
     }
-    const langPack = getLanguageStrings(lang());
+    const langPack = getLanguageStrings(lang);
 
     if (props.locale && ObjectKeys(props.locale).length === 35) {
       ObjectAssign(langPack, props.locale);
@@ -53,22 +56,6 @@ const DefaultColorPicker = (props: ColorPickerProps) => {
 
     return langPack;
   };
-  const colorPresets = () => props.colorPresets;
-  const colorKeywords = () => props.colorKeywords;
-  const placeholder = () =>
-    props.placeholder ? props.placeholder : locale().placeholder.replace(/%/g, format().toUpperCase());
-  const offsetHeight = () => (window.innerWidth >= 980 ? 300 : 230);
-  const offsetWidth = () => (window.innerWidth >= 980 ? 300 : 230);
-
-  const [value, setValue] = useState<string>(initValue());
-  const [color, setColor] = useState<Color>(new Color(value, format()));
-  const [open, setOpen] = useState<HTMLDivElement | null>(null);
-  const [drag, setDrag] = useState<HTMLElement | null>(null);
-  const [pickerShown, setPickerShown] = useState<boolean>(false);
-  const [menuShown, setMenuShown] = useState<boolean>(false);
-  const [position, setPosition] = useState<string>('');
-  const [controlPositions, setControlPositions] = useState<typeof initialControlPositions>(initialControlPositions);
-  // allow this to be readily available on typing on inputs
   const isDark = () => {
     const temp = new Color(value);
     return temp.isDark && temp.a > 0.33;
@@ -78,7 +65,7 @@ const DefaultColorPicker = (props: ColorPickerProps) => {
       'color-picker',
       ...[props.className ? props.className.split(/\s/) : ''],
       isDark() ? 'txt-dark' : 'txt-light',
-      theme() === 'light' ? ' light' : '',
+      theme === 'light' ? ' light' : '',
       open ? 'open' : '',
     ]
       .filter(c => c)
@@ -89,45 +76,6 @@ const DefaultColorPicker = (props: ColorPickerProps) => {
   const menuDropdown = useRef<HTMLDivElement>(null);
   const input = useRef<HTMLInputElement>(null);
 
-  const hue = () => controlPositions.c2y / offsetHeight();
-  const lightness = () => roundPart(color.toHsv().v * 100);
-  const saturation = () => roundPart(color.toHsv().s * 100);
-  const alpha = () => 1 - controlPositions.c3y / offsetHeight();
-  const fill = () => {
-    return new Color({
-      h: hue(),
-      s: 1,
-      l: 0.5,
-      a: alpha(),
-    });
-  };
-  const fillGradient = () => {
-    const roundA = roundPart(alpha() * 100) / 100;
-
-    return `linear-gradient(rgba(0,0,0,0) 0%, rgba(0,0,0,${roundA}) 100%),
-          linear-gradient(to right, rgba(255,255,255,${roundA}) 0%, ${fill().toRgbString()} 100%), 
-          linear-gradient(rgb(255,255,255) 0%, rgb(255,255,255) 100%)`;
-  };
-
-  const updateDropdownPosition = () => {
-    const elRect = getBoundingClientRect(input.current as HTMLInputElement);
-    const { top, bottom } = elRect;
-    const { offsetHeight: elHeight } = input.current as HTMLInputElement;
-    const windowHeight = getDocumentElement(input.current as HTMLInputElement).clientHeight;
-    const dropdown = open;
-    if (!dropdown) return;
-    const { offsetHeight: dropHeight } = dropdown;
-    const distanceBottom = windowHeight - bottom;
-    const distanceTop = top;
-    const bottomExceed = top + dropHeight + elHeight > windowHeight; // show
-    const topExceed = top - dropHeight < 0; // show-top
-
-    if ((dropdown === pickerDropdown.current || !topExceed) && distanceBottom < distanceTop && bottomExceed) {
-      setPosition('top');
-    } else {
-      setPosition('bottom');
-    }
-  };
   const pickerClass = () => {
     return `${open === pickerDropdown.current ? ' ' + position : ''}${pickerShown ? ' show' : ''}`;
   };
@@ -135,65 +83,6 @@ const DefaultColorPicker = (props: ColorPickerProps) => {
     return `${open === menuDropdown.current ? ' ' + position : ''}${menuShown ? ' show' : ''}`;
   };
 
-  const appearance = () => {
-    const hsl = color.toHsl();
-    const hsv = color.toHsv();
-    const hue = roundPart(hsl.h * 360);
-    const saturationSource = format() === 'hsl' ? hsl.s : hsv.s;
-    const saturation = roundPart(saturationSource * 100);
-    const lightness = roundPart(hsl.l * 100);
-    const hsvl = hsv.v * 100;
-
-    let colorName = 'black';
-
-    // determine color appearance
-    /* istanbul ignore else */
-    if (lightness === 100 && saturation === 0) {
-      colorName = locale().white;
-    } else if (lightness === 0) {
-      colorName = locale().black;
-    } else if (saturation === 0) {
-      colorName = locale().grey;
-    } else if (hue < 15 || hue >= 345) {
-      colorName = locale().red;
-    } else if (hue >= 15 && hue < 45) {
-      colorName = hsvl > 80 && saturation > 80 ? locale().orange : locale().brown;
-    } else if (hue >= 45 && hue < 75) {
-      const isGold = hue > 46 && hue < 54 && hsvl < 80 && saturation > 90;
-      const isOlive = hue >= 54 && hue < 75 && hsvl < 80;
-      colorName = isGold ? locale().gold : locale().yellow;
-      colorName = isOlive ? locale().olive : colorName;
-    } else if (hue >= 75 && hue < 155) {
-      colorName = hsvl < 68 ? locale().green : locale().lime;
-    } else if (hue >= 155 && hue < 175) {
-      colorName = locale().teal;
-    } else if (hue >= 175 && hue < 195) {
-      colorName = locale().cyan;
-    } else if (hue >= 195 && hue < 255) {
-      colorName = locale().blue;
-    } else if (hue >= 255 && hue < 270) {
-      colorName = locale().violet;
-    } else if (hue >= 270 && hue < 295) {
-      colorName = locale().magenta;
-    } else if (hue >= 295 && hue < 345) {
-      colorName = locale().pink;
-    }
-    return colorName;
-  };
-
-  const updateControlPositions = () => {
-    const hsv = color.toHsv();
-    const alpha = color.a;
-    const hue = hsv.h;
-    const saturation = hsv.s;
-    const lightness = hsv.v;
-    setControlPositions({
-      c1x: saturation * offsetWidth(),
-      c1y: (1 - lightness) * offsetHeight(),
-      c2y: hue * offsetHeight(),
-      c3y: (1 - alpha) * offsetHeight(),
-    });
-  };
   const hideDropdown = () => {
     if (pickerShown) hidePicker();
     else if (menuShown) hideMenu();
@@ -201,87 +90,71 @@ const DefaultColorPicker = (props: ColorPickerProps) => {
 
   /** Event Listeners */
   // handleBlur must be function to allow accessing THIS
-  function handleBlur(this: HTMLElement, { relatedTarget }: FocusEvent) {
-    if (relatedTarget && !this.contains(relatedTarget as HTMLElement)) {
+  function handleBlur({ relatedTarget, currentTarget }: FocusEvent<HTMLElement>) {
+    if (relatedTarget && !currentTarget.contains(relatedTarget)) {
       hideDropdown();
     }
   }
-  const menuKeyHandler = (e: KeyboardEvent & { target: HTMLElement; code: string }) => {
-    const { target, code } = e;
-    const { previousElementSibling, nextElementSibling, parentElement } = target;
-    const isColorOptionsMenu =
-      typeof menuDropdown !== 'undefined' &&
-      parentElement &&
-      (menuDropdown.current as HTMLDivElement).contains(parentElement);
-    const allSiblings = parentElement ? [...parentElement.children] : [];
-    const columnsCount =
-      isColorOptionsMenu && getElementStyle(parentElement, 'grid-template-columns').split(' ').length;
-    const currentIndex = allSiblings.indexOf(target);
-    const previousElement = currentIndex > -1 && columnsCount && allSiblings[currentIndex - columnsCount];
-    const nextElement = currentIndex > -1 && columnsCount && allSiblings[currentIndex + columnsCount];
-
-    if ([keyArrowDown, keyArrowUp, keySpace].includes(code)) {
-      // prevent scroll when navigating the menu via arrow keys / Space
-      e.preventDefault();
-    }
-    if (isColorOptionsMenu) {
-      if (previousElement && code === keyArrowUp) {
-        focus(previousElement as HTMLElement);
-      } else if (nextElement && code === keyArrowDown) {
-        focus(nextElement as HTMLElement);
-      } else if (previousElementSibling && code === keyArrowLeft) {
-        focus(previousElementSibling as HTMLElement);
-      } else if (nextElementSibling && code === keyArrowRight) {
-        focus(nextElementSibling as HTMLElement);
-      }
-    } else if (previousElementSibling && [keyArrowLeft, keyArrowUp].includes(code)) {
-      focus(previousElementSibling as HTMLElement);
-    } else if (nextElementSibling && [keyArrowRight, keyArrowDown].includes(code)) {
-      focus(nextElementSibling as HTMLElement);
-    }
-
-    if ([keyEnter, keySpace].includes(code)) {
-      target.click();
-    }
+  const handleDismiss = ({ code }: Event & KeyboardEvent<Document>) => {
+    if (open && code === 'Escape') hideDropdown();
   };
-  const handleDismiss = (e: KeyboardEvent) => {
-    if (open && e.code === 'Escape') hideDropdown();
-  };
-  const pointerUp = (e: PointerEvent) => {
-    const doc = getDocument(e.target as Node);
+  const pointerUp = ({ target }: PointerEvent) => {
+    const doc = getDocument(target as Node);
     const selection = doc.getSelection();
 
     if (
       !drag &&
       (!selection || !selection.toString().length) &&
-      (!mainRef.current || !mainRef.current.contains(e.target as Node))
+      (!mainRef.current || !mainRef.current.contains(target as Node))
     ) {
       hideDropdown();
     }
 
     setDrag(null);
   };
+  const updateDropdownPosition = () => {
+    if (input.current) {
+      const elRect = getBoundingClientRect(input.current);
+      const { top, bottom } = elRect;
+      const { offsetHeight: inputHeight } = input.current;
+      const { clientHeight } = document.documentElement;
+      const dropdown = open;
+      if (!dropdown) return;
+      const { offsetHeight: dropHeight } = dropdown;
+      const distanceBottom = clientHeight - bottom;
+      const distanceTop = top;
+      const bottomExceed = top + dropHeight + inputHeight > clientHeight; // show
+      const topExceed = top - dropHeight < 0; // show-top
+
+      if ((dropdown === pickerDropdown.current || !topExceed) && distanceBottom < distanceTop && bottomExceed) {
+        setPosition('top');
+      } else {
+        setPosition('bottom');
+      }
+    }
+  };
+  const updateControlPositions = () => {
+    const hsv = color.toHsv();
+    const alpha = color.a;
+    const hue = hsv.h;
+    const saturation = hsv.s;
+    const lightness = hsv.v;
+    const offsetLength = window.innerWidth > 980 ? 300 : 230;
+    setControlPositions({
+      c1x: saturation * offsetLength,
+      c1y: (1 - lightness) * offsetLength,
+      c2y: hue * offsetLength,
+      c3y: (1 - alpha) * offsetLength,
+    });
+  };
 
   const toggleGlobalEvents = (add?: boolean) => {
     const action = add ? addListener : removeListener;
-    const win = getWindow(input.current as HTMLElement);
-    const doc = win.document;
-    action(win, 'scroll', updateControlPositions);
-    action(win, 'resize', handleResize);
+    const doc = window.document;
+    action(window, 'scroll', updateControlPositions);
+    action(window, 'resize', handleResize);
     action(doc, 'keyup', handleDismiss as EventListener);
     action(doc, 'pointerup', pointerUp as EventListener);
-    if (typeof mainRef.current !== 'undefined')
-      action(mainRef.current as HTMLElement, 'focusout', handleBlur as EventListener);
-    // when no presets/keywords, the menu won't be rendered
-    if (typeof menuDropdown.current !== 'undefined')
-      action(menuDropdown.current as HTMLElement, 'keydown', menuKeyHandler as EventListener);
-  };
-
-  const hideTransitionEnd = () => {
-    setPosition('');
-    setOpen(null);
-    // reset value if not changed
-    setValue(color.toString());
   };
   const showMenu = () => {
     setOpen(menuDropdown.current as HTMLDivElement);
@@ -323,23 +196,67 @@ const DefaultColorPicker = (props: ColorPickerProps) => {
     reflow(pickerDropdown.current as HTMLDivElement);
     emulateTransitionEnd(pickerDropdown.current as HTMLDivElement, hideTransitionEnd);
   };
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const newValue = e.target.value;
-    const newColor = new Color(newValue, format());
-    if (newValue && newValue.length && newColor.isValid) {
-      update(newColor);
+  const hideTransitionEnd = () => {
+    setPosition('');
+    setOpen(null);
+    // focus the button
+    focus(input.current?.previousElementSibling as HTMLElement);
+    if (inputValue !== value) {
+      setInputValue(value);
+    }
+  };
+
+  const handleChange = ({ currentTarget }: ChangeEvent<HTMLInputElement>) => {
+    const newValue = currentTarget.value;
+    const newColor = new Color(newValue, format);
+    setInputValue(newValue);
+
+    if (newValue.length && newColor.isValid) {
+      setColor(newColor);
+      updateControlPositions();
+    }
+  };
+  const handleKeyUp = ({ code }: KeyboardEvent<HTMLInputElement>) => {
+    if ([keyEnter, 'NumpadEnter'].includes(code)) {
+      const newValue = color.toString();
+      setValue(newValue);
+      setInputValue(newValue);
+      updateControlPositions();
     }
   };
   const handleResize = () => startTransition(updateControlPositions);
   const update = (newColor: Color) => {
-    startTransition(() => {
-      const { r, g, b, a } = newColor;
-      setColor(prev => ObjectAssign(prev, { r, g, b, a }));
-      // setColor(newColor);
-      setValue(newColor.toString());
-      updateControlPositions();
-    });
+    const newValue = newColor.toString();
+    setColor(newColor);
+    setValue(newValue);
+    setInputValue(newValue);
+    updateControlPositions();
   };
+
+  // effects
+  useEffect(() => {
+    if (props.format) setFormat(props.format);
+  }, [props.format]);
+
+  useEffect(() => {
+    if (props.theme) setTheme(props.theme);
+  }, [props.theme]);
+
+  useEffect(() => {
+    if (props.lang) setLang(props.lang);
+  }, [props.lang]);
+
+  useEffect(() => {
+    if (props.placeholder) setPlaceholder(props.placeholder);
+  }, [props.placeholder]);
+
+  useEffect(() => {
+    if (props.colorPresets) setColorPresets(props.colorPresets);
+  }, [props.colorPresets]);
+
+  useEffect(() => {
+    if (props.colorKeywords) setColorKeywords(props.colorKeywords);
+  }, [props.colorKeywords]);
 
   useEffect(() => {
     if (pickerShown || menuShown) {
@@ -349,17 +266,25 @@ const DefaultColorPicker = (props: ColorPickerProps) => {
     }
 
     return toggleGlobalEvents;
-  });
+  }, [menuShown, pickerShown]);
 
-  useMemo(() => {
-    if (typeof props.onChange === 'function') {
-      props.onChange(value);
-    }
+  useEffect(() => {
+    update(new Color(value, format));
+  }, [format]);
+
+  useEffect(() => {
+    requestAnimationFrame(() => {
+      if (typeof props.onChange === 'function') {
+        props.onChange(value);
+      }
+    });
   }, [value]);
 
-  useMemo(() => {
-    update(new Color(value, format()));
-  }, [format()]);
+  useEffect(() => {
+    if (props.value) {
+      update(new Color(props.value, format));
+    }
+  }, []);
 
   return (
     <PickerContext.Provider
@@ -368,6 +293,7 @@ const DefaultColorPicker = (props: ColorPickerProps) => {
         locale,
         value,
         setValue,
+        setInputValue,
         color,
         setColor,
         drag,
@@ -375,68 +301,56 @@ const DefaultColorPicker = (props: ColorPickerProps) => {
         controlPositions,
         setControlPositions,
         updateControlPositions,
-        offsetWidth,
-        offsetHeight,
-        appearance,
         update,
-        hue,
-        saturation,
-        lightness,
-        alpha,
-        fill,
-        fillGradient,
       }}
     >
-      <Suspense>
-        <div className={className()} lang={lang()} ref={mainRef}>
-          <button
-            className="picker-toggle btn-appearance"
-            aria-expanded={pickerShown}
-            aria-haspopup={true}
-            onClick={showPicker}
-          >
-            <span className="v-hidden">{`${locale().pickerLabel}. ${
-              locale().formatLabel
-            }: ${format().toUpperCase()}`}</span>
-          </button>
-          <input
-            ref={input}
-            type="text"
-            name={id()}
-            id={id()}
-            className="color-preview btn-appearance"
-            autoComplete="off"
-            spellCheck={false}
-            placeholder={placeholder()}
-            value={value}
-            tabIndex={-1}
-            style={{ backgroundColor: value }}
-            onFocus={showPicker}
-            onChange={handleChange}
-            // onSubmit={(e) => console.log(e)}
-            // onInput={(e: ChangeEvent<HTMLInputElement>) => setValue(e.target.value)}
-          />
-          <PickerDropdown className={pickerClass()} ref={pickerDropdown} />
+      <div className={className()} lang={lang} ref={mainRef} onBlur={handleBlur}>
+        <button
+          className="picker-toggle btn-appearance"
+          aria-expanded={pickerShown}
+          aria-haspopup={true}
+          onClick={showPicker}
+        >
+          <span className="v-hidden">{`${locale().pickerLabel}. ${
+            locale().formatLabel
+          }: ${format.toUpperCase()}`}</span>
+        </button>
+        <input
+          ref={input}
+          type="text"
+          name={id()}
+          id={id()}
+          className="color-preview btn-appearance"
+          autoComplete="off"
+          spellCheck={false}
+          placeholder={placeholder}
+          value={inputValue}
+          tabIndex={pickerShown ? -1 : 0}
+          style={{ backgroundColor: value }}
+          onFocus={showPicker}
+          onChange={handleChange}
+          onKeyUp={handleKeyUp}
+        />
+        <PickerDropdown className={pickerClass()} ref={pickerDropdown} />
 
-          <MenuDropdown
-            className={menuClass()}
-            ref={menuDropdown}
-            colorPresets={colorPresets()}
-            colorKeywords={colorKeywords()}
+        <MenuDropdown
+          className={menuClass()}
+          ref={menuDropdown}
+          colorPresets={colorPresets}
+          colorKeywords={colorKeywords}
+        >
+          <button
+            className="menu-toggle btn-appearance"
+            tabIndex={menuShown || pickerShown ? 0 : -1}
+            aria-expanded={menuShown}
+            aria-haspopup={true}
+            onClick={toggleMenu}
           >
-            <button
-              className="menu-toggle btn-appearance"
-              tabIndex={menuShown || pickerShown ? 0 : -1}
-              aria-expanded={menuShown}
-              aria-haspopup={true}
-              onClick={toggleMenu}
-            >
-              <span className="v-hidden">{locale().toggleLabel}</span>
-              <Arrow />
-            </button>
-          </MenuDropdown>
-        </div>
-      </Suspense>
+            <span className="v-hidden">{locale().toggleLabel}</span>
+            <Arrow />
+          </button>
+        </MenuDropdown>
+      </div>
     </PickerContext.Provider>
   );
 };

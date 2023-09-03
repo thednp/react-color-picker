@@ -1,4 +1,4 @@
-import type { JSX } from 'react';
+import type { JSX, KeyboardEvent } from 'react';
 
 export type ColorList = string[];
 
@@ -90,10 +90,12 @@ export type PresetsProps = {
   className: string;
   colorPresets: ColorPresets;
   children?: JSX.Element;
+  keyHandler: (e: KeyboardEvent<HTMLElement>) => void;
 };
 
 export type KeyProps = {
   colorKeywords: ColorKeywords;
+  keyHandler: (e: KeyboardEvent<HTMLElement>) => void;
 };
 
 export type MenuProps = {

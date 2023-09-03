@@ -21,40 +21,35 @@ type PreProps = {
   keywords?: ColorKeywords;
 };
 
-const Pre = (props: PreProps) => {
-  const id = () => props.id || 'color-picker-sample-code';
-  const className = () => props.className;
-  const colorString = () => `  value="${props.color}"`;
-  const formatString = () => (props.format !== 'rgb' ? '  format="' + props.format + '"' : '');
-  const langString = () => (props.lang !== 'en' ? '  lang="' + props.lang + '"' : '');
-  const themeString = () => (props.theme !== 'dark' ? '  theme="' + props.theme + '"' : '');
-  const onChangeString = () => `  onChange={(color) => console.log(color)}`;
-  const keywordsString = () =>
-    props.keywords && props.keywords.length ? '  colorKeywords={' + JSON.stringify(props.keywords) + '}' : '';
-  const presetsString = () =>
-    props.presets && props.presets.hueSteps && props.presets.lightSteps
-      ? `  colorPresets={${JSON.stringify(props.presets)}}`
-      : '';
+const Pre = ({ id, lang, color, format, theme, className, keywords, presets }: PreProps) => {
+  const colorString = `  value="${color}"`;
+  const formatString = format !== 'rgb' ? '  format="' + format + '"' : '';
+  const langString = lang !== 'en' ? '  lang="' + lang + '"' : '';
+  const themeString = theme !== 'dark' ? '  theme="' + theme + '"' : '';
+  const onChangeString = `  onChange={(color) => console.log(color)}`;
+  const keywordsString = keywords && keywords.length ? '  colorKeywords={' + JSON.stringify(keywords) + '}' : '';
+  const presetsString =
+    presets && presets.hueSteps && presets.lightSteps ? `  colorPresets={${JSON.stringify(presets)}}` : '';
 
   // cannot deconstruct class variable
   return (
     <Suspense>
       <div className="position-relative">
-        <pre id={id()} className={className()}>
+        <pre id={id} className={className}>
           <span className="d-block">{'<DefaultColorPicker'}</span>
           <span className={'heading-color'}>
-            <span className="d-block">{colorString()}</span>
-            <span className="d-block">{formatString()}</span>
-            <span className="d-block">{langString()}</span>
-            <span className="d-block">{themeString()}</span>
-            <span className="d-block">{onChangeString()}</span>
-            <span className="d-block">{keywordsString()}</span>
-            <span className="d-block">{presetsString()}</span>
+            <span className="d-block">{colorString}</span>
+            <span className="d-block">{formatString}</span>
+            <span className="d-block">{langString}</span>
+            <span className="d-block">{themeString}</span>
+            <span className="d-block">{onChangeString}</span>
+            <span className="d-block">{keywordsString}</span>
+            <span className="d-block">{presetsString}</span>
           </span>
           <span className="d-block">{`/>`}</span>
         </pre>
         <div className="position-absolute d-flex gap-1" style={{ top: '1rem', right: '1rem' }}>
-          <button className="btn-option" onClick={copyToClipboard} data-target={id()}>
+          <button className="btn-option" onClick={copyToClipboard} data-target={id}>
             <span className="v-hidden">Copy</span>
             <Files fill="currentColor" />
           </button>

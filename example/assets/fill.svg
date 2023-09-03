@@ -7,6 +7,6 @@
     </radialGradient>
   </defs>
   <g>
-    <rect x="0" y="0" width="800" height="600" fill="url(#b1)"></rect>
+    <rect x="0" y="0" width="800" height="600" fill="url(#b1)" fill-opacity="0.56"></rect>
   </g>
 </svg>
