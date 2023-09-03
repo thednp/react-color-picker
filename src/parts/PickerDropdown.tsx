@@ -16,10 +16,9 @@ import {
 import { addListener, removeListener } from '@thednp/event-listener';
 import type { ControlProps, PickerProps } from '../types/types';
 import { usePickerContext } from './ColorPickerContext';
+import offsetLength from '../util/offsetLength';
 
 const { roundPart } = Color;
-const offsetHeight = () => (window.innerWidth >= 980 ? 300 : 230);
-const offsetWidth = () => (window.innerWidth >= 980 ? 300 : 230);
 
 const ColorControls = (props: ControlProps) => {
   const {
@@ -44,8 +43,8 @@ const ColorControls = (props: ControlProps) => {
     rgb(255, 0, 255) 83.33%, 
     rgb(255, 0, 0) 100%
   )`;
-  const hue = () => controlPositions.c2y / offsetHeight();
-  const alpha = () => 1 - controlPositions.c3y / offsetHeight();
+  const hue = () => controlPositions.c2y / offsetLength();
+  const alpha = () => 1 - controlPositions.c3y / offsetLength();
   const lightness = () => roundPart(color.toHsv().v * 100);
   const saturation = () => roundPart(color.toHsv().s * 100);
   const fill = () =>
@@ -123,14 +122,19 @@ const ColorControls = (props: ControlProps) => {
   const pointerDown = (e: PointerEvent<HTMLElement>) => {
     if (e.button !== 0) return;
     const { currentTarget, target, pageX, pageY } = e;
-    const elements = [...(controlsParentRef.current as HTMLElement).children] as HTMLElement[];
-    const [visual] = [...currentTarget.children] as HTMLElement[];
+    const elements = [...(controlsParentRef.current as HTMLElement).children] as [
+      HTMLElement,
+      HTMLElement,
+      HTMLElement,
+    ];
+    const [visual] = [...currentTarget.children] as [HTMLElement, HTMLElement];
     const { left, top } = getBoundingClientRect(visual);
     const { documentElement } = document;
     const offsetX = pageX - documentElement.scrollLeft - left;
     const offsetY = pageY - documentElement.scrollTop - top;
 
     setDrag(visual);
+
     /* istanbul ignore else */
     if (elements[0].contains(target as Node)) {
       changeControl1(offsetX, offsetY);
@@ -168,15 +172,15 @@ const ColorControls = (props: ControlProps) => {
     e.preventDefault();
 
     // const [k1, k2, k3] = knobs();
-    const elements = [...controlsParentRef.current.children] as HTMLElement[];
+    const elements = [...controlsParentRef.current.children] as [HTMLElement, HTMLElement, HTMLElement];
     const { activeElement } = document;
-    const yRatio = offsetHeight() / 360;
+    const yRatio = offsetLength() / 360;
 
     /* istanbul ignore else */
     if (activeElement === target) {
       /* istanbul ignore else */
       if (elements[0].contains(target as Node)) {
-        const xRatio = offsetWidth() / 100;
+        const xRatio = offsetLength() / 100;
 
         /* istanbul ignore else */
         if ([keyArrowLeft, keyArrowRight].includes(code)) {
@@ -215,16 +219,16 @@ const ColorControls = (props: ControlProps) => {
   const changeControl1 = (X: number, Y: number) => {
     let [offsetX, offsetY] = [0, 0];
 
-    if (X > offsetWidth()) offsetX = offsetWidth();
+    if (X > offsetLength()) offsetX = offsetLength();
     else if (X >= 0) offsetX = X;
 
-    if (Y > offsetHeight()) offsetY = offsetHeight();
+    if (Y > offsetLength()) offsetY = offsetLength();
     else if (Y >= 0) offsetY = Y;
 
-    const HUE = controlPositions.c2y / offsetHeight();
-    const saturation = offsetX / offsetWidth();
-    const lightness = 1 - offsetY / offsetHeight();
-    const alpha = 1 - controlPositions.c3y / offsetHeight();
+    const HUE = controlPositions.c2y / offsetLength();
+    const saturation = offsetX / offsetLength();
+    const lightness = 1 - offsetY / offsetLength();
+    const alpha = 1 - controlPositions.c3y / offsetLength();
 
     // new color
     const newColor = new Color(
@@ -251,13 +255,13 @@ const ColorControls = (props: ControlProps) => {
   const changeControl2 = (Y: number) => {
     let offsetY = 0;
 
-    if (Y > offsetHeight()) offsetY = offsetHeight();
+    if (Y > offsetLength()) offsetY = offsetLength();
     else if (Y >= 0) offsetY = Y;
 
-    const HUE = offsetY / offsetHeight();
-    const saturation = controlPositions.c1x / offsetWidth();
-    const lightness = 1 - controlPositions.c1y / offsetHeight();
-    const alpha = 1 - controlPositions.c3y / offsetHeight();
+    const HUE = offsetY / offsetLength();
+    const saturation = controlPositions.c1x / offsetLength();
+    const lightness = 1 - controlPositions.c1y / offsetLength();
+    const alpha = 1 - controlPositions.c3y / offsetLength();
 
     // new color
     const newColor = new Color(
@@ -283,11 +287,11 @@ const ColorControls = (props: ControlProps) => {
   const changeAlpha = (Y: number) => {
     let offsetY = 0;
 
-    if (Y > offsetHeight()) offsetY = offsetHeight();
+    if (Y > offsetLength()) offsetY = offsetLength();
     else if (Y >= 0) offsetY = Y;
 
     // update color alpha
-    const alpha = 1 - offsetY / offsetHeight();
+    const alpha = 1 - offsetY / offsetLength();
     const newColor = new Color(color.setAlpha(alpha), format);
     const newValue = newColor.toString();
 
@@ -374,7 +378,7 @@ const ColorControls = (props: ControlProps) => {
 
 const RGBForm = forwardRef((props: PickerProps, ref: ForwardedRef<HTMLDivElement>) => {
   const { locale, format, color, controlPositions, update } = usePickerContext();
-  const alpha = () => 1 - controlPositions.c3y / offsetHeight();
+  const alpha = () => 1 - controlPositions.c3y / offsetLength();
   const id = useId().replace(/\:/g, '');
   const rgb = () => {
     let { r, g, b, a } = color.toRgb();
@@ -471,7 +475,7 @@ const RGBForm = forwardRef((props: PickerProps, ref: ForwardedRef<HTMLDivElement
 
 const HSLForm = forwardRef((props: PickerProps, ref: ForwardedRef<HTMLDivElement>) => {
   const { format, locale, color, controlPositions, update } = usePickerContext();
-  const alpha = () => 1 - controlPositions.c3y / offsetHeight();
+  const alpha = () => 1 - controlPositions.c3y / offsetLength();
   const id = useId().replace(/\:/g, '');
   const hsl = () => {
     let { h, s, l, a } = color.toHsl();
@@ -569,7 +573,7 @@ const HSLForm = forwardRef((props: PickerProps, ref: ForwardedRef<HTMLDivElement
 
 const HWBForm = forwardRef((props: PickerProps, ref: ForwardedRef<HTMLDivElement>) => {
   const { locale, format, color, controlPositions, update } = usePickerContext();
-  const alpha = () => 1 - controlPositions.c3y / offsetHeight();
+  const alpha = () => 1 - controlPositions.c3y / offsetLength();
   const id = useId().replace(/\:/g, '');
   const hwb = () => {
     let { h, w, b, a } = color.toHwb();

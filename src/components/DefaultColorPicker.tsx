@@ -5,7 +5,6 @@ import {
   reflow,
   focus,
   emulateTransitionEnd,
-  getDocument,
   ObjectAssign,
   ObjectKeys,
   keyEnter,
@@ -21,6 +20,7 @@ import Arrow from '../assets/Arrow';
 import PickerDropdown from '../parts/PickerDropdown';
 import MenuDropdown from '../parts/MenuDropdown';
 import defaultValues from '../util/defaultValues';
+import offsetLength from '../util/offsetLength';
 
 // import default color picker style
 import './color-picker.css';
@@ -83,9 +83,50 @@ const DefaultColorPicker = (props: ColorPickerProps) => {
     return `${open === menuDropdown.current ? ' ' + position : ''}${menuShown ? ' show' : ''}`;
   };
 
+  // toggle visibility
+  const showMenu = () => {
+    setOpen(menuDropdown.current as HTMLDivElement);
+    setPosition('bottom');
+    reflow(menuDropdown.current as HTMLElement);
+    startTransition(() => {
+      updateDropdownPosition();
+      setMenuShown(true);
+      setPickerShown(false);
+    });
+  };
+  const hideMenu = () => {
+    setMenuShown(false);
+    reflow(menuDropdown.current as HTMLElement);
+    emulateTransitionEnd(menuDropdown.current as HTMLElement, hideTransitionEnd);
+  };
   const hideDropdown = () => {
     if (pickerShown) hidePicker();
     else if (menuShown) hideMenu();
+  };
+  const toggleMenu = () => {
+    if (open !== menuDropdown.current) {
+      showMenu();
+    } else {
+      hideMenu();
+    }
+  };
+  const showPicker = () => {
+    setOpen(pickerDropdown.current as HTMLDivElement);
+    setPosition('bottom');
+    reflow(pickerDropdown.current as HTMLElement);
+    // update control positions
+    updateControlPositions();
+    startTransition(() => {
+      updateDropdownPosition();
+      setPickerShown(true);
+      setMenuShown(false);
+      (input.current as HTMLInputElement).focus();
+    });
+  };
+  const hidePicker = () => {
+    setPickerShown(false);
+    reflow(pickerDropdown.current as HTMLDivElement);
+    emulateTransitionEnd(pickerDropdown.current as HTMLDivElement, hideTransitionEnd);
   };
 
   /** Event Listeners */
@@ -99,8 +140,7 @@ const DefaultColorPicker = (props: ColorPickerProps) => {
     if (open && code === 'Escape') hideDropdown();
   };
   const pointerUp = ({ target }: PointerEvent) => {
-    const doc = getDocument(target as Node);
-    const selection = doc.getSelection();
+    const selection = document.getSelection();
 
     if (
       !drag &&
@@ -139,68 +179,28 @@ const DefaultColorPicker = (props: ColorPickerProps) => {
     const hue = hsv.h;
     const saturation = hsv.s;
     const lightness = hsv.v;
-    const offsetLength = window.innerWidth > 980 ? 300 : 230;
     setControlPositions({
-      c1x: saturation * offsetLength,
-      c1y: (1 - lightness) * offsetLength,
-      c2y: hue * offsetLength,
-      c3y: (1 - alpha) * offsetLength,
+      c1x: saturation * offsetLength(),
+      c1y: (1 - lightness) * offsetLength(),
+      c2y: hue * offsetLength(),
+      c3y: (1 - alpha) * offsetLength(),
     });
   };
 
   const toggleGlobalEvents = (add?: boolean) => {
     const action = add ? addListener : removeListener;
-    const doc = window.document;
     action(window, 'scroll', updateControlPositions);
-    action(window, 'resize', handleResize);
-    action(doc, 'keyup', handleDismiss as EventListener);
-    action(doc, 'pointerup', pointerUp as EventListener);
+    action(window, 'resize', updateControlPositions);
+    action(document, 'keyup', handleDismiss as EventListener);
+    action(document, 'pointerup', pointerUp as EventListener);
   };
-  const showMenu = () => {
-    setOpen(menuDropdown.current as HTMLDivElement);
-    setPosition('bottom');
-    reflow(menuDropdown.current as HTMLElement);
-    startTransition(() => {
-      updateDropdownPosition();
-      setMenuShown(true);
-      setPickerShown(false);
-    });
-  };
-  const hideMenu = () => {
-    setMenuShown(false);
-    reflow(menuDropdown.current as HTMLElement);
-    emulateTransitionEnd(menuDropdown.current as HTMLElement, hideTransitionEnd);
-  };
-  const toggleMenu = () => {
-    if (open !== menuDropdown.current) {
-      showMenu();
-    } else {
-      hideMenu();
-    }
-  };
-  const showPicker = () => {
-    setOpen(pickerDropdown.current as HTMLDivElement);
-    setPosition('bottom');
-    reflow(pickerDropdown.current as HTMLElement);
-    // update control positions
-    handleResize();
-    startTransition(() => {
-      updateDropdownPosition();
-      setPickerShown(true);
-      setMenuShown(false);
-      (input.current as HTMLInputElement).focus();
-    });
-  };
-  const hidePicker = () => {
-    setPickerShown(false);
-    reflow(pickerDropdown.current as HTMLDivElement);
-    emulateTransitionEnd(pickerDropdown.current as HTMLDivElement, hideTransitionEnd);
-  };
+
   const hideTransitionEnd = () => {
     setPosition('');
     setOpen(null);
     // focus the button
     focus(input.current?.previousElementSibling as HTMLElement);
+    // reset value if not changed
     if (inputValue !== value) {
       setInputValue(value);
     }
@@ -224,7 +224,6 @@ const DefaultColorPicker = (props: ColorPickerProps) => {
       updateControlPositions();
     }
   };
-  const handleResize = () => startTransition(updateControlPositions);
   const update = (newColor: Color) => {
     const newValue = newColor.toString();
     setColor(newColor);
@@ -323,9 +322,9 @@ const DefaultColorPicker = (props: ColorPickerProps) => {
           className="color-preview btn-appearance"
           autoComplete="off"
           spellCheck={false}
+          tabIndex={pickerShown ? -1 : 0}
           placeholder={placeholder}
           value={inputValue}
-          tabIndex={pickerShown ? -1 : 0}
           style={{ backgroundColor: value }}
           onFocus={showPicker}
           onChange={handleChange}

@@ -154,7 +154,7 @@ const MenuDropdown = forwardRef((props: MenuProps, ref: ForwardedRef<HTMLDivElem
       focus(nextElementSibling as HTMLElement);
     }
 
-    if ([keyEnter, keySpace].includes(code)) {
+    if ([keyEnter, keySpace, 'NumpadEnter'].includes(code)) {
       (target as HTMLElement).click();
     }
   };
