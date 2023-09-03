@@ -1,6 +1,6 @@
 {
   "name": "@thednp/react-color-picker",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "🎨 Modern Color Picker for React",
   "keywords": [
     "react",
@@ -32,10 +32,10 @@
   ],
   "exports": {
     ".": {
-      "import": "./dist/ndex.js",
+      "import": "./dist/index.js",
       "types": "./dist/index.d.ts"
     },
-    "./dist/index.css": {
+    "./style.css": {
       "import": "./dist/index.css"
     }
   },
@@ -48,7 +48,7 @@
     "build": "tsup",
     "build:example": "pnpm lint && pnpm format && vite build example",
     "build:docs": "pnpm lint && pnpm format && vite build example --config example/vite.config.docs.ts",
-    "prepublishOnly": "pnpm format && pnpm lint && tsup",
+    "prepublishOnly": "pnpm update-deps && pnpm format && pnpm lint && tsup",
     "format": "prettier -w \"src/**/*.{js,ts,json,css,tsx,jsx}\" \"example/**/*.{js,ts,json,css,tsx,jsx}\"",
     "lint": "pnpm lint:types && pnpm lint:code",
     "lint:code": "eslint --max-warnings 0 src/**/*.{ts,tsx}",
