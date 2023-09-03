@@ -1,6 +1,6 @@
 {
   "name": "@thednp/react-color-picker",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "🎨 Modern Color Picker for React",
   "keywords": [
     "react",
@@ -30,6 +30,15 @@
     "dist",
     "src"
   ],
+  "exports": {
+    ".": {
+      "import": "./dist/ndex.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./dist/index.css": {
+      "import": "./dist/index.css"
+    }
+  },
   "peerDependencies": {
     "react": "^18.0.0"
   },
