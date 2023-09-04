@@ -1,6 +1,6 @@
 {
   "name": "@thednp/react-color-picker",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "🎨 Modern Color Picker for React",
   "keywords": [
     "react",
@@ -8,7 +8,7 @@
     "color picker",
     "colorpicker"
   ],
-  "homepage": "https://thednp/github.io/react-color-picker",
+  "homepage": "https://thednp.github.io/react-color-picker",
   "bugs": {
     "url": "https://github.com/thednp/react-color-picker/issues"
   },
