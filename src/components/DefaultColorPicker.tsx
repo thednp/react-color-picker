@@ -234,27 +234,27 @@ const DefaultColorPicker = (props: ColorPickerProps) => {
 
   // effects
   useEffect(() => {
-    if (props.format) setFormat(props.format);
+    setFormat(props.format || defaultValues.format);
   }, [props.format]);
 
   useEffect(() => {
-    if (props.theme) setTheme(props.theme);
+    setTheme(props.theme || defaultValues.theme);
   }, [props.theme]);
 
   useEffect(() => {
-    if (props.lang) setLang(props.lang);
+    setLang(props.lang || defaultValues.lang);
   }, [props.lang]);
 
   useEffect(() => {
-    if (props.placeholder) setPlaceholder(props.placeholder);
+    setPlaceholder(props.placeholder || defaultValues.placeholder);
   }, [props.placeholder]);
 
   useEffect(() => {
-    if (props.colorPresets) setColorPresets(props.colorPresets);
+    setColorPresets(props.colorPresets);
   }, [props.colorPresets]);
 
   useEffect(() => {
-    if (props.colorKeywords) setColorKeywords(props.colorKeywords);
+    setColorKeywords(props.colorKeywords);
   }, [props.colorKeywords]);
 
   useEffect(() => {

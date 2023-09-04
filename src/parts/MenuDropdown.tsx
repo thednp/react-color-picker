@@ -95,13 +95,14 @@ const KeywordsMenu = (props: KeyProps) => {
       <ul className="color-defaults" role="listbox" aria-label={locale().defaultsLabel} onKeyDown={keyHandler}>
         {colorKeywords.map(key => {
           const [label, val] = typeof key === 'string' ? [key, key] : (ObjectEntries(key)[0] as [string, string]);
-          const isActive = () => val === value;
+          const newColor = () => new Color(val, format);
+          const isActive = () => newColor().toString() === value;
           const className = () => `color-option${isActive() ? ' active' : ''}`;
           return (
             <li
               key={label}
               className={className()}
-              onClick={() => update(new Color(val, format))}
+              onClick={() => update(newColor())}
               tabIndex={0}
               role="option"
               aria-selected={isActive()}
