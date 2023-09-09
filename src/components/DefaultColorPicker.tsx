@@ -1,5 +1,4 @@
 import Color from '@thednp/color';
-import { addListener, removeListener } from '@thednp/event-listener';
 import {
   getBoundingClientRect,
   reflow,
@@ -8,6 +7,9 @@ import {
   ObjectAssign,
   ObjectKeys,
   keyEnter,
+  keyNumpadEnter,
+  on,
+  off,
 } from '@thednp/shorty';
 
 import { useState, useEffect, startTransition, useRef, ChangeEvent, FocusEvent, KeyboardEvent, useId } from 'react';
@@ -188,11 +190,11 @@ const DefaultColorPicker = (props: ColorPickerProps) => {
   };
 
   const toggleGlobalEvents = (add?: boolean) => {
-    const action = add ? addListener : removeListener;
+    const action = add ? on : off;
     action(window, 'scroll', updateControlPositions);
     action(window, 'resize', updateControlPositions);
-    action(document, 'keyup', handleDismiss as EventListener);
-    action(document, 'pointerup', pointerUp as EventListener);
+    action(document, 'keyup', handleDismiss);
+    action(document, 'pointerup', pointerUp);
   };
 
   const hideTransitionEnd = () => {
@@ -217,7 +219,7 @@ const DefaultColorPicker = (props: ColorPickerProps) => {
     }
   };
   const handleKeyUp = ({ code }: KeyboardEvent<HTMLInputElement>) => {
-    if ([keyEnter, 'NumpadEnter'].includes(code)) {
+    if ([keyEnter, keyNumpadEnter].includes(code)) {
       const newValue = color.toString();
       setValue(newValue);
       setInputValue(newValue);
@@ -305,6 +307,7 @@ const DefaultColorPicker = (props: ColorPickerProps) => {
     >
       <div className={className()} lang={lang} ref={mainRef} onBlur={handleBlur}>
         <button
+          type="button"
           className="picker-toggle btn-appearance"
           aria-expanded={pickerShown}
           aria-haspopup={true}
@@ -339,6 +342,7 @@ const DefaultColorPicker = (props: ColorPickerProps) => {
           colorKeywords={colorKeywords}
         >
           <button
+            type="button"
             className="menu-toggle btn-appearance"
             tabIndex={menuShown || pickerShown ? 0 : -1}
             aria-expanded={menuShown}

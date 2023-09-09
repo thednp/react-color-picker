@@ -1,5 +1,5 @@
 import Color from '@thednp/color';
-import { getBoundingClientRect, keyArrowUp, keyArrowDown, keyArrowLeft, keyArrowRight } from '@thednp/shorty';
+import { getBoundingClientRect, keyArrowUp, keyArrowDown, keyArrowLeft, keyArrowRight, on, off } from '@thednp/shorty';
 import {
   createElement,
   Suspense,
@@ -13,7 +13,6 @@ import {
   useEffect,
   useMemo,
 } from 'react';
-import { addListener, removeListener } from '@thednp/event-listener';
 import type { ControlProps, PickerProps } from '../types/types';
 import { usePickerContext } from './ColorPickerContext';
 import offsetLength from '../util/offsetLength';
@@ -146,7 +145,7 @@ const ColorControls = (props: ControlProps) => {
     e.preventDefault();
   };
 
-  const pointerMove = (e: Event & PointerEvent<HTMLElement>): void => {
+  const pointerMove = (e: PointerEvent<HTMLElement>): void => {
     const { pageX, pageY } = e;
     if (!drag || !controlsParentRef.current) return;
 
@@ -305,8 +304,8 @@ const ColorControls = (props: ControlProps) => {
   };
 
   const toggleGlobalEvents = (add?: boolean) => {
-    const action = add ? addListener : removeListener;
-    action(document, 'pointermove', pointerMove as EventListener);
+    const action = add ? on : off;
+    action(document, 'pointermove', pointerMove);
   };
   useEffect(() => {
     if (drag) toggleGlobalEvents(true);

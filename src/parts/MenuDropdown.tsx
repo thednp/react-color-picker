@@ -10,6 +10,7 @@ import {
   keyArrowUp,
   keySpace,
   keyEnter,
+  keyNumpadEnter,
   keyArrowLeft,
   keyArrowRight,
   getElementStyle,
@@ -155,7 +156,7 @@ const MenuDropdown = forwardRef((props: MenuProps, ref: ForwardedRef<HTMLDivElem
       focus(nextElementSibling as HTMLElement);
     }
 
-    if ([keyEnter, keySpace, 'NumpadEnter'].includes(code)) {
+    if ([keyEnter, keySpace, keyNumpadEnter].includes(code)) {
       (target as HTMLElement).click();
     }
   };
