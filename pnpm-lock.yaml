@@ -9,8 +9,8 @@ dependencies:
     specifier: ^1.0.8
     version: 1.0.8
   '@thednp/color-picker':
-    specifier: 2.0.0-alpha9
-    version: 2.0.0-alpha9
+    specifier: 2.0.0-alpha10
+    version: 2.0.0-alpha10
   '@thednp/shorty':
     specifier: 2.0.0-alpha22
     version: 2.0.0-alpha22
@@ -744,25 +744,15 @@ packages:
       - supports-color
     dev: true
 
-  /@thednp/color-picker@2.0.0-alpha9:
-    resolution: {integrity: sha512-IaYmiskgbOUjp5YqR/+8OrqupCqern5gBqc5wlBu/pzJDd9tmhHpaZy2D1e5zSgbszxh3v5Q7kJE00aiJtEGBQ==}
+  /@thednp/color-picker@2.0.0-alpha10:
+    resolution: {integrity: sha512-5NhCpFaIafLXO1z0meeDug02jjaMu+ndwZTKDQqwwagEsTK4uIfzjZ/SndimnADNRDtl6NDX8MmRvFho6GZYuQ==}
     dependencies:
       '@thednp/color': 1.0.8
-      '@thednp/event-listener': 2.0.4
-      '@thednp/shorty': 2.0.0-alpha17
+      '@thednp/shorty': 2.0.0-alpha22
     dev: false
 
   /@thednp/color@1.0.8:
     resolution: {integrity: sha512-jQBkcRtE8odj90mLZ3NsV69186fQcC0P2QSa2xyZBvXswJCiAzp2necdWU+nT6vjIU09o/dYB9Mv3rsyN/ysEA==}
-    dev: false
-
-  /@thednp/event-listener@2.0.4:
-    resolution: {integrity: sha512-sc4B7AzYAIvnGnivirq0XyR7LfzEDhGiiB70Q0qdNn8wSJ2pL1buVAsEZxrlc47qRJiBV4YIP+BFkyMm2r3NLg==}
-    engines: {node: '>=16', pnpm: '>=8.6.0'}
-    dev: false
-
-  /@thednp/shorty@2.0.0-alpha17:
-    resolution: {integrity: sha512-CsVmjqRhiIdRZmtrT9pXiucvSAvAgnukd/CRnC/lHc364223KIavGVTGSM3OknKdlkDKFLTZDqkv7i5+VTRXBA==}
     dev: false
 
   /@thednp/shorty@2.0.0-alpha22:

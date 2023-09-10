@@ -77,7 +77,7 @@
   },
   "dependencies": {
     "@thednp/color": "^1.0.8",
-    "@thednp/color-picker": "2.0.0-alpha9",
+    "@thednp/color-picker": "2.0.0-alpha10",
     "@thednp/shorty": "2.0.0-alpha22",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
