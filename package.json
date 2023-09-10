@@ -1,6 +1,6 @@
 {
   "name": "@thednp/react-color-picker",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "🎨 Modern Color Picker for React",
   "keywords": [
     "react",
@@ -48,7 +48,7 @@
     "build": "tsup",
     "build:example": "pnpm lint && pnpm format && vite build example",
     "build:docs": "pnpm lint && pnpm format && vite build example --config example/vite.config.docs.ts",
-    "prepublishOnly": "pnpm up && pnpm format && pnpm lint && tsup",
+    "prepublishOnly": "pnpm up && npm update && pnpm format && pnpm lint && tsup",
     "format": "prettier -w \"src/**/*.{js,ts,json,css,tsx,jsx}\" \"example/**/*.{js,ts,json,css,tsx,jsx}\"",
     "lint": "pnpm lint:types && pnpm lint:code",
     "lint:code": "eslint --max-warnings 0 src/**/*.{ts,tsx}",
@@ -78,8 +78,7 @@
   "dependencies": {
     "@thednp/color": "^1.0.8",
     "@thednp/color-picker": "2.0.0-alpha9",
-    "@thednp/event-listener": "^2.0.4",
-    "@thednp/shorty": "2.0.0-alpha20",
+    "@thednp/shorty": "2.0.0-alpha22",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },

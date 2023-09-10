@@ -11,12 +11,9 @@ dependencies:
   '@thednp/color-picker':
     specifier: 2.0.0-alpha9
     version: 2.0.0-alpha9
-  '@thednp/event-listener':
-    specifier: ^2.0.4
-    version: 2.0.4
   '@thednp/shorty':
-    specifier: 2.0.0-alpha20
-    version: 2.0.0-alpha20
+    specifier: 2.0.0-alpha22
+    version: 2.0.0-alpha22
   react:
     specifier: ^18.2.0
     version: 18.2.0
@@ -768,8 +765,8 @@ packages:
     resolution: {integrity: sha512-CsVmjqRhiIdRZmtrT9pXiucvSAvAgnukd/CRnC/lHc364223KIavGVTGSM3OknKdlkDKFLTZDqkv7i5+VTRXBA==}
     dev: false
 
-  /@thednp/shorty@2.0.0-alpha20:
-    resolution: {integrity: sha512-BDowl3BxsbBtaRSyJOOJx9GreQYIBUKNCmx+jxkxJBy2SKfHOpE8H7KShLPProIaBweS/Fhb18jIC22VA7a+HQ==}
+  /@thednp/shorty@2.0.0-alpha22:
+    resolution: {integrity: sha512-BpXSRRGKJyZcP1OLBM2G7i+zcWGEA+6oHPwHs8GdaHykJDroDl+UaDEQX+PGiIxItosvY4hmF8zU2vG2JQ/qkQ==}
     engines: {node: '>=16', pnpm: '>=8.6.0'}
     dev: false
 
@@ -2011,8 +2008,8 @@ packages:
       glob: 7.2.3
     dev: true
 
-  /rollup@3.29.0:
-    resolution: {integrity: sha512-nszM8DINnx1vSS+TpbWKMkxem0CDWk3cSit/WWCBVs9/JZ1I/XLwOsiUglYuYReaeWWSsW9kge5zE5NZtf/a4w==}
+  /rollup@3.29.1:
+    resolution: {integrity: sha512-c+ebvQz0VIH4KhhCpDsI+Bik0eT8ZFEVZEYw0cGMVqIP8zc+gnwl7iXCamTw7vzv2MeuZFZfdx5JJIq+ehzDlg==}
     engines: {node: '>=14.18.0', npm: '>=8.0.0'}
     hasBin: true
     optionalDependencies:
@@ -2205,7 +2202,7 @@ packages:
       joycon: 3.1.1
       postcss-load-config: 4.0.1
       resolve-from: 5.0.0
-      rollup: 3.29.0
+      rollup: 3.29.1
       source-map: 0.8.0-beta.0
       sucrase: 3.34.0
       tree-kill: 1.2.2
@@ -2296,7 +2293,7 @@ packages:
       '@types/node': 20.6.0
       esbuild: 0.18.20
       postcss: 8.4.29
-      rollup: 3.29.0
+      rollup: 3.29.1
     optionalDependencies:
       fsevents: 2.3.3
     dev: true
