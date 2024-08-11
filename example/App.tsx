@@ -1,9 +1,9 @@
 import { ObjectEntries, ObjectKeys, ObjectValues } from '@thednp/shorty';
 import Color from '@thednp/color';
 import { useEffect, useState } from 'react';
-import { ReactComponent as Fill } from './assets/fill.svg';
-import { ReactComponent as Banner } from './assets/banner.svg';
-import { ReactComponent as Plus } from './assets/plus.svg';
+import Fill from './assets/fill.svg?react';
+import Banner from './assets/banner.svg?react';
+import Plus from './assets/plus.svg?react';
 import './style.css';
 
 import Pre from './Pre';

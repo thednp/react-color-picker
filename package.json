@@ -1,6 +1,6 @@
 {
   "name": "@thednp/react-color-picker",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "description": "🎨 Modern Color Picker for React",
   "keywords": [
     "react",
@@ -58,33 +58,33 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "@types/node": "^20.6.0",
-    "@types/react": "^18.2.21",
-    "@types/react-dom": "^18.2.7",
-    "@typescript-eslint/eslint-plugin": "^6.6.0",
-    "@typescript-eslint/parser": "^6.6.0",
-    "@vitejs/plugin-react": "^4.0.4",
-    "eslint": "^8.49.0",
+    "@types/node": "^22.2.0",
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "@typescript-eslint/eslint-plugin": "^6.21.0",
+    "@typescript-eslint/parser": "^6.21.0",
+    "@vitejs/plugin-react": "^4.3.1",
+    "eslint": "^8.57.0",
     "eslint-plugin-eslint-comments": "^3.2.0",
     "eslint-plugin-no-only-tests": "^3.1.0",
-    "eslint-plugin-react-hooks": "^4.6.0",
-    "eslint-plugin-react-refresh": "^0.4.3",
-    "prettier": "^3.0.3",
-    "tsup": "^7.2.0",
-    "typescript": "^5.2.2",
-    "vite": "^4.4.9",
-    "vite-plugin-svgr": "^3.2.0"
+    "eslint-plugin-react-hooks": "^4.6.2",
+    "eslint-plugin-react-refresh": "^0.4.9",
+    "prettier": "^3.3.3",
+    "tsup": "^8.2.4",
+    "typescript": "^5.5.4",
+    "vite": "^5.4.0",
+    "vite-plugin-svgr": "^4.2.0"
   },
   "dependencies": {
-    "@thednp/color": "^1.0.8",
-    "@thednp/color-picker": "2.0.0-alpha10",
-    "@thednp/shorty": "2.0.0-alpha22",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "@thednp/color": "^1.0.9",
+    "@thednp/color-picker": "^2.0.1",
+    "@thednp/shorty": "2.0.3",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
   },
   "packageManager": "pnpm@8.6.12",
   "engines": {
-    "node": ">=16",
+    "node": ">=18",
     "pnpm": ">=8.6.0"
   }
 }
