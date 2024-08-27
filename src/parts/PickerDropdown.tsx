@@ -244,11 +244,11 @@ const ColorControls = (props: ControlProps) => {
     setValue(newValue);
     setInputValue(newValue);
     setColor(newColor);
-    setControlPositions({
-      ...controlPositions,
+    setControlPositions(prev => ({
+      ...prev,
       c1x: offsetX,
       c1y: offsetY,
-    });
+    }));
   };
 
   const changeControl2 = (Y: number) => {
@@ -277,10 +277,10 @@ const ColorControls = (props: ControlProps) => {
     setValue(newValue);
     setInputValue(newValue);
     setColor(newColor);
-    setControlPositions({
-      ...controlPositions,
+    setControlPositions(prev => ({
+      ...prev,
       c2y: offsetY,
-    });
+    }));
   };
 
   const changeAlpha = (Y: number) => {
@@ -297,10 +297,10 @@ const ColorControls = (props: ControlProps) => {
     setValue(newValue);
     setInputValue(newValue);
     setColor(newColor);
-    setControlPositions({
-      ...controlPositions,
+    setControlPositions(prev => ({
+      ...prev,
       c3y: offsetY,
-    });
+    }));
   };
 
   const toggleGlobalEvents = (add?: boolean) => {

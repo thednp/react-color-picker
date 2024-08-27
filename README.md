@@ -7,7 +7,7 @@
 [![eslint version](https://img.shields.io/badge/eslint-8.57.0-brightgreen)](https://github.com/eslint)
 [![prettier version](https://img.shields.io/badge/prettier-3.3.3-brightgreen)](https://prettier.io/)
 [![react version](https://img.shields.io/badge/react-18.3.1-brightgreen)](https://react.dev/)
-[![vite version](https://img.shields.io/badge/vite-5.4.0-brightgreen)](https://github.com/vitejs)
+[![vite version](https://img.shields.io/badge/vite-5.4.2-brightgreen)](https://github.com/vitejs)
 
 The feature rich **ColorPicker** component for React, sourced with TypeScript, WAI-ARIA compliant and is mainly based on [ColorPicker](https://github.com/thednp/color-picker).
 
