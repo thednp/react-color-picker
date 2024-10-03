@@ -3,11 +3,12 @@
 # React Color Picker
 [![ci](https://github.com/thednp/react-color-picker/actions/workflows/ci.yml/badge.svg)](https://github.com/thednp/react-color-picker/actions/workflows/ci.yml)
 [![Npm Version](https://img.shields.io/npm/v/@thednp/react-color-picker)](https://www.npmjs.com/package/@thednp/react-color-picker)
-[![typescript version](https://img.shields.io/badge/typescript-5.5.4-brightgreen)](https://www.typescriptlang.org/)
-[![eslint version](https://img.shields.io/badge/eslint-8.57.0-brightgreen)](https://github.com/eslint)
+[![typescript version](https://img.shields.io/badge/typescript-5.6.2-brightgreen)](https://www.typescriptlang.org/)
+[![eslint version](https://img.shields.io/badge/eslint-8.57.1-brightgreen)](https://github.com/eslint)
 [![prettier version](https://img.shields.io/badge/prettier-3.3.3-brightgreen)](https://prettier.io/)
 [![react version](https://img.shields.io/badge/react-18.3.1-brightgreen)](https://react.dev/)
-[![vite version](https://img.shields.io/badge/vite-5.4.2-brightgreen)](https://github.com/vitejs)
+[![vitest version](https://img.shields.io/badge/vitest-2.1.2-brightgreen)](https://vitest.dev/)
+[![vite version](https://img.shields.io/badge/vite-5.4.8-brightgreen)](https://github.com/vitejs)
 
 The feature rich **ColorPicker** component for React, sourced with TypeScript, WAI-ARIA compliant and is mainly based on [ColorPicker](https://github.com/thednp/color-picker).
 
@@ -48,6 +49,13 @@ function App() {
 }
 ```
 For additional component configuration options, please check the [demo](https://thednp.github.io/react-color-picker/).
+
+
+## Some notes
+* The React version for [ColorPicer](https://github.com/thednp/color-picker) was implemented with minor differences to accomodate the declarative nature of the modern JavaScript framework, especially with event listeners.
+* Due to the nature of React state management, this component is implemented with minor differences compared to the [SolidJS](https://github.com/thednp/solid-color-picker) version.
+* Tests powered by Vitest make use of a real browser environment for consistent and realistic results.
+* Since the React event listeners are synthetic by nature, some special fixtures have been implemented for the tests to make them possible.
 
 
 ## License

@@ -1,6 +1,6 @@
 import { ObjectEntries, ObjectKeys, ObjectValues } from '@thednp/shorty';
 import Color from '@thednp/color';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import Fill from './assets/fill.svg?react';
 import Banner from './assets/banner.svg?react';
 import Plus from './assets/plus.svg?react';
@@ -13,6 +13,7 @@ import type { SupportedFormat, SupportedLanguage } from '../src/types/types';
 import getLocale from './util/locales';
 
 const App = () => {
+  const ref = useRef(null);
   const [format, setFormat] = useState<SupportedFormat>('rgb');
   const [lang, setLang] = useState<SupportedLanguage>('en');
   const [instanceColor, setInstanceColor] = useState('red');
@@ -43,12 +44,12 @@ const App = () => {
       document.documentElement.removeAttribute('dir');
     }
   }, [lang]);
-  const onChange = (color: string) => {
+  const onChange = useCallback((color: string) => {
+    setInstanceColor(color);
     const newColor = new Color(color);
     const newColor90 = new Color(color).spin(90);
     const newColor180 = new Color(color).spin(180);
     const newColor270 = new Color(color).spin(270);
-    setInstanceColor(color);
     document.documentElement.style.setProperty('--color', newColor.toRgbString());
     document.documentElement.style.setProperty('--color90', newColor90.toRgbString());
     document.documentElement.style.setProperty('--color180', newColor180.toRgbString());
@@ -69,7 +70,9 @@ const App = () => {
       '--bg-color',
       newColor.isDark && newColor.a > 0.33 ? 'rgba(255,255,255,0.15)' : 'rgba(0,0,0,0.10)',
     );
-  };
+    // startTransition(() => setInstanceColor(color));
+  }, []);
+
   return (
     <>
       <div className="fill-wrapper">
@@ -90,6 +93,7 @@ const App = () => {
               Default Color Picker
             </label>
             <DefaultColorPicker
+              ref={ref}
               id={'my-color-picker'}
               format={format}
               theme={theme}

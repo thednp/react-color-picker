@@ -1,5 +1,5 @@
 import { getLanguageStrings } from '../locales/getLanguageStrings';
-import type { SupportedFormat, SupportedLanguage, ColorKeywords, ColorPresets } from 'src/types/types';
+import type { SupportedFormat, SupportedLanguage, ColorKeywords, ColorPresets } from '../types/types';
 const defaultValues = {
   value: 'rgb(255,0,0)',
   placeholder: getLanguageStrings('en').placeholder,

@@ -6,19 +6,28 @@ import {
   emulateTransitionEnd,
   ObjectAssign,
   ObjectKeys,
+  keyEscape,
   keyEnter,
-  keyNumpadEnter,
   on,
   off,
 } from '@thednp/shorty';
 
-import { useState, useEffect, startTransition, useRef, ChangeEvent, FocusEvent, KeyboardEvent, useId } from 'react';
+import {
+  useState,
+  useEffect,
+  useRef,
+  ChangeEvent,
+  FocusEvent,
+  KeyboardEvent,
+  useId,
+  forwardRef,
+  type ForwardedRef,
+  type MutableRefObject,
+} from 'react';
 import type { ColorPickerProps } from '../types/types';
 import { PickerContext } from '../parts/ColorPickerContext';
 import initialControlPositions from '../util/initialControlPositions';
 import { languagePacks, getLanguageStrings } from '../locales/getLanguageStrings';
-import Arrow from '../assets/Arrow';
-
 import PickerDropdown from '../parts/PickerDropdown';
 import MenuDropdown from '../parts/MenuDropdown';
 import defaultValues from '../util/defaultValues';
@@ -27,21 +36,33 @@ import offsetLength from '../util/offsetLength';
 // import default color picker style
 import './color-picker.css';
 
-const DefaultColorPicker = (props: ColorPickerProps) => {
-  const id = () => props.id || `color-picker-${useId().replace(/\:/g, '')}`;
-  const [lang, setLang] = useState(defaultValues.lang);
-  const [theme, setTheme] = useState(defaultValues.theme);
-  const [format, setFormat] = useState(defaultValues.format);
-  const [colorPresets, setColorPresets] = useState(defaultValues.colorPresets);
-  const [colorKeywords, setColorKeywords] = useState(defaultValues.colorKeywords);
-  const [placeholder, setPlaceholder] = useState(
-    getLanguageStrings(lang).placeholder.replace(/%/g, format.toUpperCase()),
-  );
-  const [inputValue, setInputValue] = useState<string>(defaultValues.value);
-  const [value, setValue] = useState<string>(inputValue);
+const DefaultColorPicker = forwardRef((props: ColorPickerProps, ref: ForwardedRef<HTMLDivElement>) => {
+  const id = props.id || `color-picker-${useId().replace(/\:/g, '')}`;
+  const lang = props.lang || defaultValues.lang;
+  const theme = props.theme || defaultValues.theme;
+  const format = props.format || defaultValues.format;
+  const initValue = props.value || defaultValues.value;
+  const colorPresets = props.colorPresets || defaultValues.colorPresets;
+  const colorKeywords = props.colorKeywords || defaultValues.colorKeywords;
+  const placeholder = props.placeholder
+    ? props.placeholder
+    : getLanguageStrings(lang).placeholder.replace(/%/g, format.toUpperCase());
+  const [inputValue, setInputValue] = useState<string>(initValue);
+  const [value, setValuePrimitive] = useState<string>(inputValue);
+  const setValue: typeof setValuePrimitive = newValue => {
+    setValuePrimitive(newValue);
+    if (typeof props.onChange === 'function') {
+      props.onChange(newValue as string);
+    }
+  };
   const [color, setColor] = useState<Color>(new Color(inputValue, format));
   const [open, setOpen] = useState<HTMLDivElement | null>(null);
-  const [drag, setDrag] = useState<HTMLElement | null>(null);
+  const [drag, setDragPrimitive] = useState<HTMLElement | undefined | null>(null);
+  const dragRef = useRef<HTMLElement | null>(null);
+  const setDrag: typeof setDragPrimitive = newDrag => {
+    setDragPrimitive(newDrag);
+    dragRef.current = newDrag as HTMLElement | null;
+  };
   const [pickerShown, setPickerShown] = useState<boolean>(false);
   const [menuShown, setMenuShown] = useState<boolean>(false);
   const [position, setPosition] = useState<string>('');
@@ -73,7 +94,6 @@ const DefaultColorPicker = (props: ColorPickerProps) => {
       .filter(c => c)
       .join(' ');
 
-  const mainRef = useRef<HTMLDivElement>(null);
   const pickerDropdown = useRef<HTMLDivElement>(null);
   const menuDropdown = useRef<HTMLDivElement>(null);
   const input = useRef<HTMLInputElement>(null);
@@ -87,21 +107,22 @@ const DefaultColorPicker = (props: ColorPickerProps) => {
 
   // toggle visibility
   const showMenu = () => {
-    setOpen(menuDropdown.current as HTMLDivElement);
+    setOpen(menuDropdown.current);
     setPosition('bottom');
-    reflow(menuDropdown.current as HTMLElement);
-    startTransition(() => {
-      updateDropdownPosition();
+    setTimeout(() => {
       setMenuShown(true);
+      reflow(menuDropdown.current!);
+      updateDropdownPosition();
       setPickerShown(false);
-    });
+    }, 17);
   };
   const hideMenu = () => {
     setMenuShown(false);
-    reflow(menuDropdown.current as HTMLElement);
-    emulateTransitionEnd(menuDropdown.current as HTMLElement, hideTransitionEnd);
+    reflow(menuDropdown.current!);
+    emulateTransitionEnd(menuDropdown.current!, hideTransitionEnd);
   };
   const hideDropdown = () => {
+    // istanbul ignore else @preserve
     if (pickerShown) hidePicker();
     else if (menuShown) hideMenu();
   };
@@ -113,17 +134,16 @@ const DefaultColorPicker = (props: ColorPickerProps) => {
     }
   };
   const showPicker = () => {
-    setOpen(pickerDropdown.current as HTMLDivElement);
+    setOpen(pickerDropdown.current);
     setPosition('bottom');
-    reflow(pickerDropdown.current as HTMLElement);
-    // update control positions
     updateControlPositions();
-    startTransition(() => {
-      updateDropdownPosition();
+    setTimeout(() => {
       setPickerShown(true);
+      reflow(pickerDropdown.current!);
+      updateDropdownPosition();
       setMenuShown(false);
-      (input.current as HTMLInputElement).focus();
-    });
+      input.current!.focus();
+    }, 17);
   };
   const hidePicker = () => {
     setPickerShown(false);
@@ -134,33 +154,36 @@ const DefaultColorPicker = (props: ColorPickerProps) => {
   /** Event Listeners */
   // handleBlur must be function to allow accessing THIS
   function handleBlur({ relatedTarget, currentTarget }: FocusEvent<HTMLElement>) {
+    // istanbul ignore next @preserve
     if (relatedTarget && !currentTarget.contains(relatedTarget)) {
       hideDropdown();
     }
   }
   const handleDismiss = ({ code }: Event & KeyboardEvent<Document>) => {
-    if (open && code === 'Escape') hideDropdown();
+    // istanbul ignore else @preserve
+    if (open && code === keyEscape) {
+      hideDropdown();
+    }
   };
   const pointerUp = ({ target }: PointerEvent) => {
     const selection = document.getSelection();
-
-    if (
-      !drag &&
-      (!selection || !selection.toString().length) &&
-      (!mainRef.current || !mainRef.current.contains(target as Node))
-    ) {
+    const container = (ref as MutableRefObject<HTMLDivElement | null>).current;
+    // istanbul ignore else @preserve
+    if (!dragRef.current && (!selection || !selection.toString().length) && !container?.contains(target as Node)) {
       hideDropdown();
     }
 
     setDrag(null);
   };
   const updateDropdownPosition = () => {
+    // istanbul ignore else @preserve
     if (input.current) {
       const elRect = getBoundingClientRect(input.current);
       const { top, bottom } = elRect;
       const { offsetHeight: inputHeight } = input.current;
       const { clientHeight } = document.documentElement;
       const dropdown = open;
+      // istanbul ignore next @preserve
       if (!dropdown) return;
       const { offsetHeight: dropHeight } = dropdown;
       const distanceBottom = clientHeight - bottom;
@@ -168,16 +191,17 @@ const DefaultColorPicker = (props: ColorPickerProps) => {
       const bottomExceed = top + dropHeight + inputHeight > clientHeight; // show
       const topExceed = top - dropHeight < 0; // show-top
 
-      if ((dropdown === pickerDropdown.current || !topExceed) && distanceBottom < distanceTop && bottomExceed) {
+      if ((!topExceed && bottomExceed) || distanceBottom < distanceTop) {
         setPosition('top');
       } else {
         setPosition('bottom');
       }
     }
   };
-  const updateControlPositions = () => {
-    const hsv = color.toHsv();
-    const alpha = color.a;
+  const updateControlPositions = (newColor?: Color) => {
+    const colorInstance = typeof newColor?.r === 'number' ? newColor : color;
+    const hsv = colorInstance.toHsv();
+    const alpha = colorInstance.a;
     const hue = hsv.h;
     const saturation = hsv.s;
     const lightness = hsv.v;
@@ -191,7 +215,7 @@ const DefaultColorPicker = (props: ColorPickerProps) => {
 
   const toggleGlobalEvents = (add?: boolean) => {
     const action = add ? on : off;
-    action(window, 'scroll', updateControlPositions);
+    action(window, 'scroll', updateDropdownPosition);
     action(window, 'resize', updateControlPositions);
     action(document, 'keyup', handleDismiss);
     action(document, 'pointerup', pointerUp);
@@ -202,62 +226,31 @@ const DefaultColorPicker = (props: ColorPickerProps) => {
     setOpen(null);
     // focus the button
     focus(input.current?.previousElementSibling as HTMLElement);
-    // reset value if not changed
-    if (inputValue !== value) {
-      setInputValue(value);
-    }
   };
 
   const handleChange = ({ currentTarget }: ChangeEvent<HTMLInputElement>) => {
-    const newValue = currentTarget.value;
+    // istanbul ignore next @preserve
+    setInputValue(currentTarget.value);
+  };
+  const handleKeyUp = (e: KeyboardEvent<HTMLInputElement>) => {
+    let newValue = e.currentTarget.value;
+    // istanbul ignore else @preserve
+    if (Color.isNonColor(newValue)) {
+      newValue = newValue === 'transparent' ? 'rgba(0,0,0,0)' : /* istanbul ignore next @preserve */ 'rgb(0,0,0)';
+    }
     const newColor = new Color(newValue, format);
-    setInputValue(newValue);
+    const newStringValue = newColor.toString();
 
-    if (newValue.length && newColor.isValid) {
+    // istanbul ignore else @preserve
+    if (keyEnter === e.key && newValue.length && newColor.isValid) {
       setColor(newColor);
-      updateControlPositions();
+      setInputValue(newStringValue);
+      setValue(newStringValue);
+      updateControlPositions(newColor);
+    } else if (keyEscape === e.key) {
+      setInputValue(color.toString());
     }
   };
-  const handleKeyUp = ({ code }: KeyboardEvent<HTMLInputElement>) => {
-    if ([keyEnter, keyNumpadEnter].includes(code)) {
-      const newValue = color.toString();
-      setValue(newValue);
-      setInputValue(newValue);
-      updateControlPositions();
-    }
-  };
-  const update = (newColor: Color) => {
-    const newValue = newColor.toString();
-    setColor(newColor);
-    setValue(newValue);
-    setInputValue(newValue);
-    updateControlPositions();
-  };
-
-  // effects
-  useEffect(() => {
-    setFormat(props.format || defaultValues.format);
-  }, [props.format]);
-
-  useEffect(() => {
-    setTheme(props.theme || defaultValues.theme);
-  }, [props.theme]);
-
-  useEffect(() => {
-    setLang(props.lang || defaultValues.lang);
-  }, [props.lang]);
-
-  useEffect(() => {
-    setPlaceholder(props.placeholder || defaultValues.placeholder);
-  }, [props.placeholder]);
-
-  useEffect(() => {
-    setColorPresets(props.colorPresets);
-  }, [props.colorPresets]);
-
-  useEffect(() => {
-    setColorKeywords(props.colorKeywords);
-  }, [props.colorKeywords]);
 
   useEffect(() => {
     if (pickerShown || menuShown) {
@@ -270,28 +263,19 @@ const DefaultColorPicker = (props: ColorPickerProps) => {
   }, [menuShown, pickerShown]);
 
   useEffect(() => {
-    update(new Color(value, format));
+    const newColor = new Color(value, format);
+    const newColorString = newColor.toString();
+    setColor(newColor);
+    setInputValue(newColorString);
+    setValue(newColorString);
+    updateControlPositions(newColor);
   }, [format]);
-
-  useEffect(() => {
-    requestAnimationFrame(() => {
-      if (typeof props.onChange === 'function') {
-        props.onChange(value);
-      }
-    });
-  }, [value]);
-
-  useEffect(() => {
-    if (props.value) {
-      update(new Color(props.value, format));
-    }
-  }, []);
 
   return (
     <PickerContext.Provider
       value={{
-        format,
         locale,
+        format,
         value,
         setValue,
         setInputValue,
@@ -302,10 +286,9 @@ const DefaultColorPicker = (props: ColorPickerProps) => {
         controlPositions,
         setControlPositions,
         updateControlPositions,
-        update,
       }}
     >
-      <div className={className()} lang={lang} ref={mainRef} onBlur={handleBlur}>
+      <div className={className()} lang={lang} ref={ref} onBlur={handleBlur}>
         <button
           type="button"
           className="picker-toggle btn-appearance"
@@ -320,8 +303,8 @@ const DefaultColorPicker = (props: ColorPickerProps) => {
         <input
           ref={input}
           type="text"
-          name={id()}
-          id={id()}
+          name={id}
+          id={id}
           className="color-preview btn-appearance"
           autoComplete="off"
           spellCheck={false}
@@ -340,22 +323,13 @@ const DefaultColorPicker = (props: ColorPickerProps) => {
           ref={menuDropdown}
           colorPresets={colorPresets}
           colorKeywords={colorKeywords}
-        >
-          <button
-            type="button"
-            className="menu-toggle btn-appearance"
-            tabIndex={menuShown || pickerShown ? 0 : -1}
-            aria-expanded={menuShown}
-            aria-haspopup={true}
-            onClick={toggleMenu}
-          >
-            <span className="v-hidden">{locale().toggleLabel}</span>
-            <Arrow />
-          </button>
-        </MenuDropdown>
+          toggleMenu={toggleMenu}
+          pickerShown={pickerShown}
+          menuShown={menuShown}
+        />
       </div>
     </PickerContext.Provider>
   );
-};
+});
 
 export default DefaultColorPicker;

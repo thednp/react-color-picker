@@ -1,23 +1,23 @@
 import Color from '@thednp/color';
-import React from 'react';
 import { createContext, useContext } from 'react';
-import type { LanguagePack, SupportedFormat, Accessor } from '../types/types';
+import type { LanguagePack, SupportedFormat, Accessor, Setter } from '../types/types';
 import initialControlPositions from '../util/initialControlPositions';
 
-export const PickerContext = createContext({
-  format: 'rgb' as SupportedFormat,
-  color: new Color('red'),
-  setColor: (() => {}) as React.Dispatch<React.SetStateAction<Color>>,
-  value: 'red',
-  setValue: (() => {}) as React.Dispatch<React.SetStateAction<string>>,
-  setInputValue: (() => {}) as React.Dispatch<React.SetStateAction<string>>,
-  locale: (() => {}) as Accessor<LanguagePack>,
-  drag: null as HTMLElement | null,
-  setDrag: (() => {}) as React.Dispatch<React.SetStateAction<HTMLElement | null>>,
-  controlPositions: initialControlPositions,
-  setControlPositions: (() => {}) as React.Dispatch<React.SetStateAction<typeof initialControlPositions>>,
-  update: (_color: Color) => {},
-  updateControlPositions: () => {},
-});
+export type ColorPickerContext = {
+  format: SupportedFormat;
+  color: Color;
+  setColor: Setter<Color>;
+  locale: Accessor<LanguagePack>;
+  drag: HTMLElement | undefined | null;
+  setDrag: Setter<HTMLElement | undefined | null>;
+  value: string;
+  setValue: Setter<string>;
+  setInputValue: Setter<string>;
+  controlPositions: typeof initialControlPositions;
+  setControlPositions: Setter<typeof initialControlPositions>;
+  updateControlPositions: (newColor: Color) => void;
+};
+
+export const PickerContext = createContext({} as ColorPickerContext);
 
 export const usePickerContext = () => useContext(PickerContext);

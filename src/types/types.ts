@@ -1,4 +1,4 @@
-import type { JSX, KeyboardEvent } from 'react';
+import type { JSX, KeyboardEvent, SetStateAction, Dispatch } from 'react';
 
 export type ColorList = string[];
 
@@ -7,6 +7,7 @@ export type SupportedFormat = 'rgb' | 'hex' | 'hwb' | 'hsl';
 
 export type LanguagePack = ColorNames & ColorPickerLabels;
 export type Accessor<T> = () => T;
+export type Setter<T> = Dispatch<SetStateAction<T>>;
 
 export interface ColorPickerLabels {
   pickerLabel: string;
@@ -51,7 +52,8 @@ export interface ColorNames {
 }
 
 /**
- * typical {hue: 0, hueSteps: 12, lightSteps: 10, saturation: 85}
+ * Coming from ColorPicker.ColorPalete
+ * @example {hue: 0, hueSteps: 12, lightSteps: 10, saturation: 85}
  */
 export type ColorPresets = {
   hue: number;
@@ -81,12 +83,10 @@ export type ControlProps = {
 };
 
 export type PickerProps = {
-  ref: HTMLDivElement;
   className: string;
 };
 
 export type PresetsProps = {
-  ref: HTMLDivElement;
   className: string;
   colorPresets: ColorPresets;
   children?: JSX.Element;
@@ -99,9 +99,11 @@ export type KeyProps = {
 };
 
 export type MenuProps = {
-  ref: HTMLDivElement;
   className: string;
   colorPresets?: ColorPresets;
   colorKeywords?: ColorKeywords;
   children?: JSX.Element;
+  toggleMenu: () => void;
+  pickerShown: boolean;
+  menuShown: boolean;
 };
