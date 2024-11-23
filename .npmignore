@@ -24,4 +24,9 @@ coverage
 .DS_Store
 .gitignore
 
-test/__screenshots__
+src
+test
+tsconfig.json
+tsup.config.ts
+vitest.config.mts
+vitest.config-ui.mts
