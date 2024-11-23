@@ -1,3 +1,5 @@
+import setNativeValue from "./setNativeValue";
+
 /**
  * A simple utility to type text into input elements.
  * It will split the string provided and replace spaces with Space keyboard key
@@ -11,7 +13,6 @@
  */
 const write = <T extends HTMLElement = HTMLElement>(target: T, value: string) => {
     const text = value.trim();
-    const tracker = (target as T & { _valueTracker: { setValue: (s: string) => void } })._valueTracker;  
 
     target.focus();
     if (target instanceof HTMLInputElement) target.select();
@@ -21,14 +22,10 @@ const write = <T extends HTMLElement = HTMLElement>(target: T, value: string) =>
     } else {
         if (target instanceof HTMLInputElement) {
             const newValue = text.replace(/Enter|Escape/g, '').replace(/Space/g, ' ');
-            target.setAttribute('value', newValue);
-            target.value = newValue;
-            if (tracker) {
-                tracker.setValue(text);
-            }
+            setNativeValue(target, newValue);
+
             target.dispatchEvent(new Event('input', { bubbles: true }));
             target.dispatchEvent(new Event('change', { bubbles: true }));
-            // target.offsetWidth;
             // console.log(target, target.value)
             if (['Escape', 'Enter'].some(x => text.endsWith(x))) {
                 const last = text.endsWith("Escape") ? "Escape" : "Enter";

@@ -1,9 +1,21 @@
-import type { JSX, KeyboardEvent, SetStateAction, Dispatch } from 'react';
+import type { Dispatch, JSX, KeyboardEvent, SetStateAction } from "react";
 
 export type ColorList = string[];
 
-export type SupportedLanguage = 'en' | 'ru' | 'ar' | 'fr' | 'de' | 'ro' | 'es' | 'pl' | 'pt' | 'zh' | 'ja' | 'ko';
-export type SupportedFormat = 'rgb' | 'hex' | 'hwb' | 'hsl';
+export type SupportedLanguage =
+  | "en"
+  | "ru"
+  | "ar"
+  | "fr"
+  | "de"
+  | "ro"
+  | "es"
+  | "pl"
+  | "pt"
+  | "zh"
+  | "ja"
+  | "ko";
+export type SupportedFormat = "rgb" | "hex" | "hwb" | "hsl";
 
 export type LanguagePack = ColorNames & ColorPickerLabels;
 export type Accessor<T> = () => T;
@@ -67,7 +79,7 @@ export type ColorKeywords = (string | Record<string, string>)[];
 export type ColorPickerProps = {
   id?: string;
   value?: string;
-  theme?: 'light' | 'dark';
+  theme?: "light" | "dark";
   lang?: SupportedLanguage;
   format?: SupportedFormat;
   className?: string;

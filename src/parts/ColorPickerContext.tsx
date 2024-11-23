@@ -1,7 +1,12 @@
-import Color from '@thednp/color';
-import { createContext, useContext } from 'react';
-import type { LanguagePack, SupportedFormat, Accessor, Setter } from '../types/types';
-import initialControlPositions from '../util/initialControlPositions';
+import Color from "@thednp/color";
+import { createContext, useContext } from "react";
+import type {
+  Accessor,
+  LanguagePack,
+  Setter,
+  SupportedFormat,
+} from "../types/types";
+import initialControlPositions from "../util/initialControlPositions";
 
 export type ColorPickerContext = {
   format: SupportedFormat;
