@@ -1,11 +1,10 @@
 [<img width="100%" src="banner.svg" alt="react-color-picker">](https://thednp.github.io/react-color-picker/)
 
 # React Color Picker
+[![Coverage Status](https://coveralls.io/repos/github/thednp/react-color-picker/badge.svg)](https://coveralls.io/github/thednp/react-color-picker)
 [![ci](https://github.com/thednp/react-color-picker/actions/workflows/ci.yml/badge.svg)](https://github.com/thednp/react-color-picker/actions/workflows/ci.yml)
 [![Npm Version](https://img.shields.io/npm/v/@thednp/react-color-picker)](https://www.npmjs.com/package/@thednp/react-color-picker)
 [![typescript version](https://img.shields.io/badge/typescript-5.8.3-brightgreen)](https://www.typescriptlang.org/)
-[![eslint version](https://img.shields.io/badge/eslint-8.57.1-brightgreen)](https://github.com/eslint)
-[![prettier version](https://img.shields.io/badge/prettier-3.3.3-brightgreen)](https://prettier.io/)
 [![react version](https://img.shields.io/badge/react-19.1.0-brightgreen)](https://react.dev/)
 [![vitest version](https://img.shields.io/badge/vitest-3.1.4-brightgreen)](https://vitest.dev/)
 [![vite version](https://img.shields.io/badge/vite-6.3.5-brightgreen)](https://github.com/vitejs)
