@@ -1,6 +1,6 @@
 import { defineConfig } from "vitest/config";
 import react from '@vitejs/plugin-react';
-import svg from 'vite-plugin-svgr';
+import svg from 'vite-react-svg';
 import path from "node:path";
 
 export default defineConfig({
