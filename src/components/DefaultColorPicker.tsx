@@ -319,7 +319,7 @@ const DefaultColorPicker = forwardRef(
             type="button"
             className="picker-toggle btn-appearance"
             aria-expanded={pickerShown}
-            aria-haspopup={true}
+            aria-haspopup
             onClick={showPicker}
           >
             <span className="v-hidden">

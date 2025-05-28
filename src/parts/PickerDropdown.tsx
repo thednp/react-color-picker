@@ -117,7 +117,9 @@ const ColorControls = (props: ControlProps) => {
 
     // istanbul ignore else @preserve
     if (
-      (["pointermove", "touchmove"].includes(e.type) && drag) ||
+      (["pointermove", "touchmove"].includes(
+        e.type,
+      ) && /* istanbul ignore next */ drag) ||
       (activeElement &&
         controlsParentRef.current?.contains(activeElement as HTMLElement))
     ) {
@@ -482,7 +484,7 @@ const RGBForm = forwardRef(
         <ColorControls stringValue={stringValue()} />
         <div className="color-form rgb">
           <label htmlFor={`color-rgb-red-${id}`}>
-            <span aria-hidden={true}>R:</span>
+            <span aria-hidden>R:</span>
             <span className="v-hidden">{locale().redLabel}</span>
           </label>
           <input
@@ -498,7 +500,7 @@ const RGBForm = forwardRef(
             onChange={changeRed}
           />
           <label htmlFor={`color-rgb-green-${id}`}>
-            <span aria-hidden={true}>G:</span>
+            <span aria-hidden>G:</span>
             <span className="v-hidden">{locale().greenLabel}</span>
           </label>
           <input
@@ -514,7 +516,7 @@ const RGBForm = forwardRef(
             onChange={changeGreen}
           />
           <label htmlFor={`color-rgb-blue-${id}`}>
-            <span aria-hidden={true}>B:</span>
+            <span aria-hidden>B:</span>
             <span className="v-hidden">{locale().blueLabel}</span>
           </label>
           <input
@@ -530,7 +532,7 @@ const RGBForm = forwardRef(
             onChange={changeBlue}
           />
           <label htmlFor={`color-rgb-alpha-${id}`}>
-            <span aria-hidden={true}>A:</span>
+            <span aria-hidden>A:</span>
             <span className="v-hidden">{locale().alphaLabel}</span>
           </label>
           <input
@@ -613,7 +615,7 @@ const HSLForm = forwardRef(
 
         <div className="color-form hsl">
           <label htmlFor={`color-hsl-hue-${id}`}>
-            <span aria-hidden={true}>H:</span>
+            <span aria-hidden>H:</span>
             <span className="v-hidden">{locale().hueLabel}</span>
           </label>
           <input
@@ -629,7 +631,7 @@ const HSLForm = forwardRef(
             onChange={changeHue}
           />
           <label htmlFor={`color-hsl-saturation-${id}`}>
-            <span aria-hidden={true}>S:</span>
+            <span aria-hidden>S:</span>
             <span className="v-hidden">{locale().saturationLabel}</span>
           </label>
           <input
@@ -645,7 +647,7 @@ const HSLForm = forwardRef(
             onChange={changeSaturation}
           />
           <label htmlFor={`color-hsl-lightness-${id}`}>
-            <span aria-hidden={true}>L:</span>
+            <span aria-hidden>L:</span>
             <span className="v-hidden">{locale().lightnessLabel}</span>
           </label>
           <input
@@ -661,7 +663,7 @@ const HSLForm = forwardRef(
             onChange={changeLightness}
           />
           <label htmlFor={`color-hsl-alpha-${id}`}>
-            <span aria-hidden={true}>A:</span>
+            <span aria-hidden>A:</span>
             <span className="v-hidden">{locale().alphaLabel}</span>
           </label>
           <input
@@ -744,7 +746,7 @@ const HWBForm = forwardRef(
 
         <div className="color-form hwb">
           <label htmlFor={`color-hwb-hue-${id}`}>
-            <span aria-hidden={true}>H:</span>
+            <span aria-hidden>H:</span>
             <span className="v-hidden">{locale().hueLabel}</span>
           </label>
           <input
@@ -760,7 +762,7 @@ const HWBForm = forwardRef(
             onChange={changeHue}
           />
           <label htmlFor={`color-hwb-whiteness-${id}`}>
-            <span aria-hidden={true}>W:</span>
+            <span aria-hidden>W:</span>
             <span className="v-hidden">{locale().whitenessLabel}</span>
           </label>
           <input
@@ -776,7 +778,7 @@ const HWBForm = forwardRef(
             onChange={changeWhiteness}
           />
           <label htmlFor={`color-hwb-blackness-${id}`}>
-            <span aria-hidden={true}>B:</span>
+            <span aria-hidden>B:</span>
             <span className="v-hidden">{locale().blacknessLabel}</span>
           </label>
           <input
@@ -792,7 +794,7 @@ const HWBForm = forwardRef(
             onChange={changeBlackness}
           />
           <label htmlFor={`color-hwb-alpha-${id}`}>
-            <span aria-hidden={true}>A:</span>
+            <span aria-hidden>A:</span>
             <span className="v-hidden">{locale().alphaLabel}</span>
           </label>
           <input
@@ -857,9 +859,9 @@ const HEXForm = forwardRef(
       >
         <ColorControls stringValue={stringValue()} />
 
-        <div className={"color-form hex"}>
+        <div className="color-form hex">
           <label htmlFor={`color-hex-${id}`}>
-            <span aria-hidden={true}>#:</span>
+            <span aria-hidden>#:</span>
             <span className="v-hidden">{locale().hexLabel}</span>
           </label>
           <input

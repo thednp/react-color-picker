@@ -191,7 +191,12 @@ const MenuDropdown = forwardRef(
       const isColorOptionsMenu = hasClass(currentTarget, "color-options");
       const allSiblings = [...parentElement.children] as HTMLElement[];
       const columnsCount = (isColorOptionsMenu &&
-        Number(getElementStyle(parentElement, "--grid-fit") || 0)) || 0;
+        Number(
+          getElementStyle(
+            parentElement,
+            "--grid-fit",
+          ) || /* istanbul ignore next */ 0,
+        )) || /* istanbul ignore next */ 0;
       const currentIndex = allSiblings.indexOf(target as HTMLElement);
       const previousElement = currentIndex > -1 && columnsCount &&
         allSiblings[currentIndex - columnsCount];
@@ -247,7 +252,7 @@ const MenuDropdown = forwardRef(
                 className="menu-toggle btn-appearance"
                 tabIndex={menuShown || pickerShown ? 0 : -1}
                 aria-expanded={menuShown}
-                aria-haspopup={true}
+                aria-haspopup
                 onClick={toggleMenu}
               >
                 <span className="v-hidden">{locale().toggleLabel}</span>

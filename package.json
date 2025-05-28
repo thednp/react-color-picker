@@ -1,6 +1,6 @@
 {
   "name": "@thednp/react-color-picker",
-  "version": "0.0.13",
+  "version": "0.0.14",
   "description": "🎨 Modern Color Picker for React",
   "keywords": [
     "react",
@@ -44,8 +44,8 @@
   },
   "scripts": {
     "pre-test": "pnpm clean-coverage",
-    "test": "pnpm pre-test && vitest --config vitest.config.mts",
-    "test-ui": "pnpm pre-test && vitest --config vitest.config-ui.mts",
+    "test": "pnpm pre-test && vitest --config vitest.config.ts",
+    "test-ui": "pnpm pre-test && vitest --config vitest.config-ui.ts",
     "clean-coverage": "rm -rf coverage .nyc_output",
     "start": "vite serve example",
     "dev": "vite serve example",
@@ -53,7 +53,7 @@
     "build:example": "pnpm lint && pnpm format && vite build example",
     "build:docs": "pnpm lint && pnpm format && vite build example --config example/vite.config.docs.ts",
     "badges": "npx -p dependency-version-badge update-badge react typescript vitest vite",
-    "prepublishOnly": "pnpm up && pnpm format && pnpm lint && tsup && pnpm badges",
+    "prepublishOnly": "pnpm up --latest && pnpm format && pnpm lint && tsup && pnpm badges",
     "format": "deno fmt src",
     "lint": "pnpm lint:types && pnpm lint:code",
     "lint:code": "deno lint src",
@@ -64,26 +64,26 @@
   "license": "MIT",
   "devDependencies": {
     "@testing-library/jest-dom": "^6.6.3",
-    "@types/node": "^22.9.3",
-    "@types/react": "^18.3.12",
-    "@types/react-dom": "^18.3.1",
-    "@vitejs/plugin-react": "^4.3.3",
-    "@vitest/browser": "^2.1.5",
-    "@vitest/coverage-istanbul": "^2.1.5",
-    "@vitest/ui": "^2.1.5",
-    "playwright": "^1.49.0",
-    "tsup": "^8.3.5",
-    "typescript": "^5.7.2",
-    "vite": "^5.4.11",
+    "@types/node": "^22.15.23",
+    "@types/react": "^19.1.6",
+    "@types/react-dom": "^19.1.5",
+    "@vitejs/plugin-react": "^4.5.0",
+    "@vitest/browser": "^3.1.4",
+    "@vitest/coverage-istanbul": "^3.1.4",
+    "@vitest/ui": "^3.1.4",
+    "playwright": "^1.52.0",
+    "tsup": "^8.5.0",
+    "typescript": "^5.8.3",
+    "vite": "^6.3.5",
     "vite-plugin-svgr": "^4.3.0",
-    "vitest": "^2.1.5"
+    "vitest": "^3.1.4"
   },
   "dependencies": {
-    "@thednp/color": "^1.0.13",
-    "@thednp/color-picker": "^2.0.3",
-    "@thednp/shorty": "^2.0.9",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "@thednp/color": "^1.0.14",
+    "@thednp/color-picker": "^2.0.4",
+    "@thednp/shorty": "^2.0.11",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0"
   },
   "packageManager": "pnpm@8.6.12",
   "engines": {

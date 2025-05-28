@@ -10,9 +10,6 @@ export default defineConfig({
       "~": path.resolve(__dirname, "src"),
     },
   },
-  server: {
-    port: 4173,
-  },
   test: {
     css: true,
     globals: true,
@@ -23,11 +20,12 @@ export default defineConfig({
       include: ["src/**/*.{ts,tsx}"],
     },
     browser: {
-      provider: 'preview', // or 'webdriverio'
+      provider: 'playwright', // or 'webdriverio'
       enabled: true,
-      headless: false,
-      name: 'chromium', // browser name is required
-      // enableUI: true
+      headless: true,
+      instances: [
+        { browser: 'chromium' }
+      ]
     },
-  },
+  },  
 });
